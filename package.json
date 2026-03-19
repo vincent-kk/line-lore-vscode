@@ -1,0 +1,122 @@
+{
+  "name": "line-lore",
+  "displayName": "Line Lore",
+  "description": "Trace any code line back to its origin Pull Request",
+  "version": "0.1.0",
+  "publisher": "lumy-pack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vincent-kk/line-lore-vscode"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "blame",
+    "pull-request",
+    "trace",
+    "pr"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Line Lore executes git commands and requires a trusted workspace."
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Line Lore requires local filesystem and git access."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "lineLore.tracePR",
+        "title": "Line Lore: Trace PR"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "lineLore.tracePR",
+          "when": "editorTextFocus && resourceScheme == file",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Line Lore",
+      "properties": {
+        "lineLore.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable Line Lore extension"
+        },
+        "lineLore.hoverProvider.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show 'Trace PR' link in hover popup"
+        },
+        "lineLore.inlineDecoration.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show PR number inline after trace"
+        },
+        "lineLore.inlineDecoration.timeout": {
+          "type": "number",
+          "default": 30,
+          "description": "Seconds before inline decoration auto-removes (0 = never)"
+        },
+        "lineLore.trace.deep": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable deep trace for squash merges by default"
+        },
+        "lineLore.trace.noAst": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable AST analysis"
+        },
+        "lineLore.trace.noCache": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable caching"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@lumy-pack/line-lore": "0.0.2"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^22",
+    "typescript": "^5.8.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.13.0",
+    "@eslint/js": "^9.13.0",
+    "typescript-eslint": "^8.26.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
+    "@vscode/vsce": "^3.6.0",
+    "npm-run-all": "^4.1.5"
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "vsce:package": "pnpm vsce package --no-dependencies",
+    "vsce:publish": "pnpm vsce publish --no-dependencies"
+  }
+}

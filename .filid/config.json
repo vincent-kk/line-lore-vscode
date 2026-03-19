@@ -31,7 +31,8 @@
     },
     "zero-peer-file": {
       "enabled": true,
-      "severity": "warning"
+      "severity": "warning",
+      "additional-allowed": ["extension.ts"]
     }
   }
 }

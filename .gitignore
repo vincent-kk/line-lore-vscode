@@ -1,0 +1,16 @@
+node_modules/
+dist/
+out/
+*.vsix
+*.tsbuildinfo
+*.log
+
+.vscode-test/
+coverage/
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+.DS_Store

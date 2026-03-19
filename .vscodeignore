@@ -1,0 +1,15 @@
+.vscode/**
+.claude/**
+.filid/**
+.omc/**
+node_modules/**
+src/**
+out/**
+esbuild.js
+eslint.config.mjs
+tsconfig.json
+.npmrc
+.gitignore
+DEVSPEC.md
+pnpm-lock.yaml
+**/*.map
