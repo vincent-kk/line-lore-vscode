@@ -54,10 +54,10 @@ line-lore-vscode/
 
 ## 3. 핵심 어댑터: `lineLoreAdapter.ts`
 
-`@lumy-pack/line-lore`의 목표 공개 인터페이스와 개선 요청 배경은 [API-SPEC.md](./API-SPEC.md), [LINE-LORE-IMPROVEMENT-REQUEST.md](./LINE-LORE-IMPROVEMENT-REQUEST.md) 를 함께 참고한다.
+`@lumy-pack/line-lore`의 공개 인터페이스 정의는 [API-SPEC.md](./API-SPEC.md) 를 참고한다.
 
 ```typescript
-import { trace, health, clearCache, type TraceOptions, type TraceFullResult } from '@lumy-pack/line-lore';
+import { trace, graph, health, clearCache, LineLoreError, type TraceOptions, type TraceFullResult, type GraphOptions, type GraphResult } from '@lumy-pack/line-lore';
 
 export class LineLoreAdapter {
   /**

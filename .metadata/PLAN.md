@@ -1,9 +1,11 @@
 # Line Lore — Development Plan
 
+> **핵심 참조**: 라이브러리 API 인터페이스는 [API-SPEC.md](./API-SPEC.md)를 따른다.
+
 ## Phase 1: MVP (Core)
 
 ### 1.1 프로젝트 기반 구조 생성
-- `src/core/lineLoreAdapter.ts` — trace, health, clearCache 래핑
+- `src/core/lineLoreAdapter.ts` — trace, graph, health, clearCache 래핑 ([API-SPEC.md §2](./API-SPEC.md#2-공개-api))
 - `src/core/resultFormatter.ts` — TraceNode[] → 표시용 데이터 변환
 - `src/utils/gitDetector.ts` — .git 감지, workspace root 판별
 - `src/types.ts` — 확장 내부 타입
@@ -62,7 +64,7 @@
 - `lineLore.tracePR_range` 명령
 
 ### 3.2 Graph 명령
-- PR → Issue 그래프 순회
+- PR → Issue 그래프 순회 via `graph()` ([API-SPEC.md §4](./API-SPEC.md#4-graph-사용-방식))
 - TreeView 렌더링
 
 ### 3.3 Cache 관리 UI

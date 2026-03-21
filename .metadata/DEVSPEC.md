@@ -62,11 +62,7 @@ VSCode 확장의 Extension Host는 Node.js 프로세스이므로 `child_process`
 
 | 문서 | 내용 |
 |------|------|
-| [API-SPEC.md](./API-SPEC.md) | 목표 `@lumy-pack/line-lore` 프로그래매틱 API 및 사용 방식 |
-| [LINE-LORE-IMPROVEMENT-REQUEST.md](./LINE-LORE-IMPROVEMENT-REQUEST.md) | `line-lore` 기능 개선 및 문서 개선 요청서 |
-| [RE-EVALUATION.md](./RE-EVALUATION.md) | 재평가 문서 인덱스 |
-| [DEV-COMPLETE-CHECKLIST.md](./DEV-COMPLETE-CHECKLIST.md) | 개발 완료 직후 셀프체크 문서 |
-| [SPEC-EXPANSION-REVIEW.md](./SPEC-EXPANSION-REVIEW.md) | 스펙 확장 수용 여부 최종 판정 문서 |
+| [API-SPEC.md](./API-SPEC.md) | `@lumy-pack/line-lore` 프로그래매틱 API 정의 (검증 완료, 2026-03-22 Accepted) |
 | [UX-SPEC.md](./UX-SPEC.md) | UX 설계 (진입점, 결과 표시, 상태 표시, 에러 표시) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | 기술 아키텍처, 모듈 구조, 빌드 |
 | [CONFIGURATION.md](./CONFIGURATION.md) | 확장 설정, package.json 매니페스트 |

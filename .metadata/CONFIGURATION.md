@@ -1,5 +1,7 @@
 # Line Lore — Configuration & Manifest
 
+> **핵심 참조**: 설정 항목은 [API-SPEC.md](./API-SPEC.md)의 `TraceOptions` 필드와 대응한다.
+
 ## 1. 확장 설정 (contributes.configuration)
 
 ```jsonc

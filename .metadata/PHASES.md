@@ -1,5 +1,7 @@
 # Line Lore — Implementation Phases
 
+> **핵심 참조**: 라이브러리 API 인터페이스는 [API-SPEC.md](./API-SPEC.md)를 따른다.
+
 ## Phase 1: MVP (Core)
 
 **목표**: 기본 trace 기능이 동작하는 최소 확장
@@ -32,7 +34,7 @@
 | 항목 | 내용 |
 |------|------|
 | Range trace | 선택 영역 다중 라인 → 동일 PR 라인은 그룹핑, 상이한 PR은 별도 항목으로 나열. "이 범위가 N개의 PR에서 유래했습니다" 안내 문구 표시. Webview Panel에서 렌더링. |
-| Graph 명령 | PR → Issue 그래프 순회 결과를 TreeView로 표시 |
+| Graph 명령 | `graph()` API로 PR → Issue 그래프 순회, TreeView로 표시 ([API-SPEC.md §4](./API-SPEC.md#4-graph-사용-방식)) |
 | Health Check 명령 | 운영 레벨 + 업그레이드 가이드 표시 |
 | Cache 관리 | 캐시 삭제 명령 + 캐시 상태 표시 |
 | Telemetry (선택) | 사용 패턴 수집 (opt-in) |

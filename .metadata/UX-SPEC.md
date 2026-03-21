@@ -1,5 +1,7 @@
 # Line Lore — UX Specification
 
+> **핵심 참조**: 라이브러리 API 인터페이스는 [API-SPEC.md](./API-SPEC.md)를 따른다. 에러 코드별 표시 분기는 [API-SPEC.md §6.3](./API-SPEC.md#63-에러-처리) 참조.
+
 ## 1. 진입점 (Entry Points)
 
 ### A. Hover Provider (주력)
