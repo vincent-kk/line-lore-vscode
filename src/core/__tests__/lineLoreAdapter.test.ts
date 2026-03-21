@@ -6,6 +6,10 @@ vi.mock('vscode', () => ({
     getConfiguration: vi.fn(() => ({
       get: vi.fn((key: string, defaultValue: unknown) => defaultValue),
     })),
+    getWorkspaceFolder: vi.fn(() => ({ uri: { fsPath: '/workspace' } })),
+  },
+  Uri: {
+    file: vi.fn((path: string) => ({ fsPath: path })),
   },
 }));
 
@@ -45,6 +49,7 @@ describe('LineLoreAdapter', () => {
       expect(mockTrace).toHaveBeenCalledWith({
         file: '/workspace/src/auth.ts',
         line: 42,
+        cwd: '/workspace',
         deep: false,
         noAst: false,
         noCache: false,

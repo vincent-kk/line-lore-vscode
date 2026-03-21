@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { detectGitRepo } from './utils/gitDetector.js';
 import { LineLoreAdapter } from './core/index.js';
 import { registerCommands } from './commands/index.js';
-import { registerProviders, DecorationController } from './providers/index.js';
+import { registerProviders } from './providers/index.js';
 import { StatusBarController, DetailPanelManager } from './views/index.js';
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
@@ -30,15 +30,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   statusBar.create();
 
   const detailPanel = new DetailPanelManager(context.extensionUri);
-  const decoration = new DecorationController();
 
   context.subscriptions.push(
     { dispose: () => statusBar.dispose() },
     { dispose: () => detailPanel.dispose() },
-    { dispose: () => decoration.dispose() },
   );
 
-  registerCommands(context, adapter, statusBar, detailPanel, decoration);
+  registerCommands(context, adapter, statusBar, detailPanel);
   registerProviders(context);
 
   try {

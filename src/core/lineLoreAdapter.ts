@@ -10,10 +10,12 @@ export class LineLoreAdapter {
     overrides?: Partial<Pick<TraceOptions, 'deep' | 'noAst' | 'noCache'>>,
   ): Promise<TraceFullResult> {
     const config = vscode.workspace.getConfiguration('lineLore');
+    const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))?.uri.fsPath;
     const options: TraceOptions = {
       file: filePath,
       line,
       ...(endLine !== undefined && { endLine }),
+      ...(cwd !== undefined && { cwd }),
       deep: overrides?.deep ?? config.get<boolean>('trace.deep', false),
       noAst: overrides?.noAst ?? config.get<boolean>('trace.noAst', false),
       noCache: overrides?.noCache ?? config.get<boolean>('trace.noCache', false),
