@@ -32,7 +32,19 @@
     "zero-peer-file": {
       "enabled": true,
       "severity": "warning",
-      "additional-allowed": ["extension.ts"]
+      "additional-allowed": [
+        "extension.ts",
+        "lineLoreAdapter.ts",
+        "resultFormatter.ts",
+        "register.ts",
+        "traceHelpers.ts",
+        "tracePR.ts",
+        "tracePRRange.ts",
+        "healthCheck.ts",
+        "clearCache.ts",
+        "hoverProvider.ts",
+        "statusBar.ts"
+      ]
     }
   }
 }
