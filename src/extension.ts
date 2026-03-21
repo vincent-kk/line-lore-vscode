@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { detectGitRepo } from './utils/gitDetector.js';
 import { LineLoreAdapter } from './core/index.js';
 import { registerCommands } from './commands/index.js';
-import { registerProviders } from './providers/index.js';
-import { StatusBarController } from './views/index.js';
+import { registerProviders, DecorationController } from './providers/index.js';
+import { StatusBarController, DetailPanelManager } from './views/index.js';
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
@@ -29,10 +29,25 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const statusBar = new StatusBarController();
   statusBar.create();
 
-  context.subscriptions.push({ dispose: () => statusBar.dispose() });
+  const detailPanel = new DetailPanelManager(context.extensionUri);
+  const decoration = new DecorationController();
 
-  registerCommands(context, adapter, statusBar);
+  context.subscriptions.push(
+    { dispose: () => statusBar.dispose() },
+    { dispose: () => detailPanel.dispose() },
+    { dispose: () => decoration.dispose() },
+  );
+
+  registerCommands(context, adapter, statusBar, detailPanel, decoration);
   registerProviders(context);
+
+  try {
+    const cwd = folders[0]?.uri.fsPath;
+    const report = await adapter.health(cwd);
+    statusBar.showPersistentLevel(report.operatingLevel);
+  } catch {
+    statusBar.showPersistentLevel(0);
+  }
 }
 
 export function deactivate(): void {}

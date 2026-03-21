@@ -43,7 +43,9 @@
         "healthCheck.ts",
         "clearCache.ts",
         "hoverProvider.ts",
-        "statusBar.ts"
+        "decorationProvider.ts",
+        "statusBar.ts",
+        "detailPanel.ts"
       ]
     }
   }

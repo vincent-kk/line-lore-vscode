@@ -4,7 +4,7 @@ Registers and implements all Line Lore commands for the Command Palette and keyb
 
 ## Public API
 
-- `registerCommands(context, adapter, statusBar)` -- registers all commands, returns disposables
+- `registerCommands(context, adapter, statusBar, detailPanel?, decoration?)` -- registers all commands
 
 ## Always do
 

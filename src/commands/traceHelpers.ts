@@ -1,23 +1,33 @@
 import * as vscode from 'vscode';
 import type { StatusBarController } from '../views/index.js';
-import type { DisplayResult } from '../types/index.js';
+import type { DetailPanelManager } from '../views/index.js';
+import type { DisplayResult, TraceFullResult } from '../types/index.js';
 import { formatErrorMessage } from '../core/index.js';
 import { LineLoreError } from '../types/index.js';
 
 export async function showTraceResult(
   display: DisplayResult,
+  result: TraceFullResult,
+  filePath: string,
+  line: number,
   noFoundLabel: string,
+  detailPanel?: DetailPanelManager,
 ): Promise<void> {
   if (display.found && display.prUrl) {
+    const buttons = detailPanel
+      ? ['Open PR', 'Copy Link', 'Show Details']
+      : ['Open PR', 'Copy Link'];
+
     const action = await vscode.window.showInformationMessage(
       `PR #${display.prNumber}: ${display.prTitle}`,
-      'Open PR',
-      'Copy Link',
+      ...buttons,
     );
     if (action === 'Open PR') {
       void vscode.env.openExternal(vscode.Uri.parse(display.prUrl));
     } else if (action === 'Copy Link') {
       void vscode.env.clipboard.writeText(display.prUrl);
+    } else if (action === 'Show Details' && detailPanel) {
+      detailPanel.show(filePath, line, result);
     }
   } else {
     void vscode.window.showWarningMessage(

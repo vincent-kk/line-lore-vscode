@@ -8,7 +8,7 @@
 
 ## API Contracts
 
-- `registerCommands(context, adapter, statusBar)`: void
+- `registerCommands(context, adapter, statusBar, detailPanel?, decoration?)`: void
 - All commands registered as `lineLore.{commandName}`
 - tracePR: reads cursor line, shows PR info or commit SHA warning
 - tracePRRange: reads selection range, passes endLine to adapter
