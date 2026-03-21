@@ -47,7 +47,7 @@ describe('executeTracePRRange', () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [{ type: 'original_commit', sha: 'abc', trackingMethod: 'blame', confidence: 'exact' }],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     });
 
@@ -68,7 +68,7 @@ describe('executeTracePRRange', () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [{ type: 'original_commit', sha: 'abc', trackingMethod: 'blame', confidence: 'exact' }],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     });
 

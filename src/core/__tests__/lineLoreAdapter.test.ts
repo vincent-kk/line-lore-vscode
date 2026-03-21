@@ -35,7 +35,7 @@ describe('LineLoreAdapter', () => {
       const mockResult = {
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
         warnings: [],
       };
       mockTrace.mockResolvedValue(mockResult);
@@ -56,7 +56,7 @@ describe('LineLoreAdapter', () => {
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
         warnings: [],
       });
 
@@ -74,7 +74,7 @@ describe('LineLoreAdapter', () => {
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
         warnings: [],
       });
 
@@ -97,7 +97,7 @@ describe('LineLoreAdapter', () => {
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
         warnings: [],
       });
 

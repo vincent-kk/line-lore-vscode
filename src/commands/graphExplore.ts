@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
 import type { StatusBarController, DetailPanelManager } from '../views/index.js';
-import { formatTraceResult } from '../core/index.js';
 import { handleTraceError } from './traceHelpers.js';
 
 export function executeGraphExplore(
@@ -10,52 +9,44 @@ export function executeGraphExplore(
   detailPanel?: DetailPanelManager,
 ): () => Promise<void> {
   return async () => {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      void vscode.window.showWarningMessage('No active editor.');
-      return;
-    }
-
-    const depthInput = await vscode.window.showInputBox({
-      prompt: 'Graph traversal depth (1 = PR+Issues, 2+ = multi-hop)',
-      value: '1',
+    const prInput = await vscode.window.showInputBox({
+      prompt: 'Enter PR number to explore its issue graph',
       validateInput: v => {
         const n = parseInt(v, 10);
-        if (isNaN(n) || n < 1 || n > 5) { return 'Enter a number between 1 and 5'; }
+        if (isNaN(n) || n < 1) { return 'Enter a valid PR number'; }
         return null;
       },
     });
 
-    if (!depthInput) { return; }
+    if (!prInput) { return; }
 
-    const filePath = editor.document.uri.fsPath;
-    const line = editor.selection.active.line + 1;
-    const graphDepth = parseInt(depthInput, 10);
+    const prNumber = parseInt(prInput, 10);
 
     statusBar.showLoading();
     try {
-      const result = await adapter.trace(filePath, line, undefined, { graphDepth });
-      const display = formatTraceResult(result);
-      statusBar.showResult(result.operatingLevel);
+      const result = await adapter.graph({ type: 'pr', number: prNumber });
 
       if (detailPanel) {
-        detailPanel.show(filePath, line, result);
+        const filePath = vscode.window.activeTextEditor?.document.uri.fsPath ?? '';
+        const line = (vscode.window.activeTextEditor?.selection.active.line ?? 0) + 1;
+        detailPanel.show(filePath, line, {
+          nodes: result.nodes,
+          operatingLevel: 2,
+          featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+          warnings: [],
+        });
       }
 
-      if (display.found) {
-        const issueNodes = result.nodes.filter(n => n.type === 'issue');
-        if (issueNodes.length > 0) {
-          void vscode.window.showInformationMessage(
-            `Found ${issueNodes.length} linked issue(s) via graph depth ${graphDepth}.`,
-          );
-        } else {
-          void vscode.window.showInformationMessage(
-            `PR #${display.prNumber}: No linked issues found at depth ${graphDepth}.`,
-          );
-        }
+      const issueNodes = result.nodes.filter(n => n.type === 'issue');
+      const prNodes = result.nodes.filter(n => n.type === 'pull_request');
+
+      if (issueNodes.length > 0) {
+        void vscode.window.showInformationMessage(
+          `PR #${prNumber}: Found ${issueNodes.length} linked issue(s) and ${prNodes.length} PR(s).`,
+        );
       } else {
-        void vscode.window.showWarningMessage(
-          `No PR found for this line. Commit: ${display.commitSha ?? 'unknown'}`,
+        void vscode.window.showInformationMessage(
+          `PR #${prNumber}: No linked issues found.`,
         );
       }
     } catch (error) {

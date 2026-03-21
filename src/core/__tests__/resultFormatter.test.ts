@@ -24,7 +24,7 @@ describe('formatTraceResult', () => {
         },
       ],
       operatingLevel: 2,
-      featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, issueGraph: false, graphql: true },
+      featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, graphql: true },
       warnings: [],
     };
 
@@ -51,7 +51,7 @@ describe('formatTraceResult', () => {
         },
       ],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: ['GitHub CLI not detected'],
     };
 
@@ -67,7 +67,7 @@ describe('formatTraceResult', () => {
     const result: TraceFullResult = {
       nodes: [],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     };
 

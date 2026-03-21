@@ -14,6 +14,8 @@ export type {
   HealthReport,
   Confidence,
   TrackingMethod,
+  GraphOptions,
+  GraphResult,
 } from '@lumy-pack/line-lore';
 
 export { LineLoreError, LineLoreErrorCode } from '@lumy-pack/line-lore';

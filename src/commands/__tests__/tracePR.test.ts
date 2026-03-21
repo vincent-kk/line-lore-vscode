@@ -50,7 +50,7 @@ describe('executeTracePR', () => {
         { type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 42, prTitle: 'feat: auth', prUrl: 'https://github.com/org/repo/pull/42' },
       ],
       operatingLevel: 2,
-      featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, issueGraph: false, graphql: true },
+      featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, graphql: true },
       warnings: [],
     });
 
@@ -67,7 +67,7 @@ describe('executeTracePR', () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [{ type: 'original_commit', sha: 'def456', trackingMethod: 'blame', confidence: 'exact' }],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     });
 
@@ -93,7 +93,7 @@ describe('executeTracePR', () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [{ type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 1, prTitle: 'test', prUrl: 'https://github.com/test' }],
       operatingLevel: 2,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     });
     vi.mocked(vscode.window.showInformationMessage).mockResolvedValue('Open PR' as never);
@@ -108,7 +108,7 @@ describe('executeTracePR', () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [{ type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 1, prTitle: 'test', prUrl: 'https://github.com/test' }],
       operatingLevel: 2,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, issueGraph: false, graphql: false },
+      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
       warnings: [],
     });
     vi.mocked(vscode.window.showInformationMessage).mockResolvedValue('Copy Link' as never);
