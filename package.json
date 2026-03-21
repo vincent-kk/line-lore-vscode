@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/vincent-kk/line-lore-vscode"
   },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
   },
