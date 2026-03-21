@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@lumy-pack/line-lore':
-        specifier: 0.0.2
-        version: 0.0.2
+        specifier: 0.0.3
+        version: 0.0.3(react-dom@19.2.4(react@18.3.1))
     devDependencies:
       '@eslint/js':
         specifier: ^9.13.0
@@ -483,8 +483,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@lumy-pack/line-lore@0.0.2':
-    resolution: {integrity: sha512-pswxyDFyE7vdLEZ1d/oPQhPXuZJ19jAZnxZngCX3SThmt9+Hipe2FBwsDxNUrh4QPyxkkN4OqD7yQreGddAYZA==}
+  '@lumy-pack/line-lore@0.0.3':
+    resolution: {integrity: sha512-WOipLq9IzgZBRbAlnRBm195o+oGssJaXqFhYf3pUy4BiM6GerH4tQsohqdbOLx1Tj9+uLFkKCWL7UpBeyf6EAQ==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -869,6 +869,15 @@ packages:
     resolution: {integrity: sha512-OTm2XdMt2YkpSn2Nx7z2EJtSuhRHsTPYsSK59hr3v8jRArK+2UEoju4Jumn1CmpgoBLGI6ReHLJ/czYltNUW3g==}
     engines: {node: '>= 20'}
     hasBin: true
+
+  '@winglet/common-utils@0.11.2':
+    resolution: {integrity: sha512-oGSRO7ibNtYrVLFH9J+1qFvk8aglJROFtnKiXVvHkkpEVcWSyMnJBghaHz3vgCuO1D9cBMwkNcZrZTCzb9Iqwg==}
+
+  '@winglet/react-utils@0.11.2':
+    resolution: {integrity: sha512-ouYxGPIpkO9KSBvr6D5lf5wu6ljPHwf2P3dmlzOCPwbXVql1okRim2ZkkHSwDFGnYO8DnNrTUZBXkwusxHr88g==}
+    peerDependencies:
+      react: '>=16 <20'
+      react-dom: '>=16 <20'
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2199,6 +2208,11 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
+  react-dom@19.2.4:
+    resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
+    peerDependencies:
+      react: ^19.2.4
+
   react-reconciler@0.29.2:
     resolution: {integrity: sha512-zZQqIiYgDCTP/f1N/mAR10nJGrPD2ZR+jDSEsKWJHYC7Cm2wodlwbR3upZRdC3cjIjSlTLNVyO7Iu0Yy7t2AYg==}
     engines: {node: '>=0.10.0'}
@@ -2290,6 +2304,9 @@ packages:
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
+
+  scheduler@0.27.0:
+    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
   secretlint@10.2.2:
     resolution: {integrity: sha512-xVpkeHV/aoWe4vP4TansF622nBEImzCY73y/0042DuJ29iKIaqgoJ8fGxre3rVSHHbxar4FdJobmTnLp9AU0eg==}
@@ -3136,8 +3153,10 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@lumy-pack/line-lore@0.0.2':
+  '@lumy-pack/line-lore@0.0.3(react-dom@19.2.4(react@18.3.1))':
     dependencies:
+      '@winglet/common-utils': 0.11.2
+      '@winglet/react-utils': 0.11.2(react-dom@19.2.4(react@18.3.1))(react@18.3.1)
       commander: 12.1.0
       execa: 9.6.1
       ink: 5.2.1(react@18.3.1)
@@ -3148,6 +3167,7 @@ snapshots:
       - '@types/react'
       - bufferutil
       - react-devtools-core
+      - react-dom
       - utf-8-validate
 
   '@nodelib/fs.scandir@2.1.5':
@@ -3594,6 +3614,14 @@ snapshots:
       keytar: 7.9.0
     transitivePeerDependencies:
       - supports-color
+
+  '@winglet/common-utils@0.11.2': {}
+
+  '@winglet/react-utils@0.11.2(react-dom@19.2.4(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@winglet/common-utils': 0.11.2
+      react: 18.3.1
+      react-dom: 19.2.4(react@18.3.1)
 
   acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
@@ -5085,6 +5113,11 @@ snapshots:
       strip-json-comments: 2.0.1
     optional: true
 
+  react-dom@19.2.4(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      scheduler: 0.27.0
+
   react-reconciler@0.29.2(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
@@ -5222,6 +5255,8 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
+
+  scheduler@0.27.0: {}
 
   secretlint@10.2.2:
     dependencies:
