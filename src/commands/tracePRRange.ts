@@ -33,7 +33,7 @@ export function executeTracePRRange(
         decoration.showDecoration(editor, startLine, display.prNumber);
       }
 
-      await showTraceResult(display, result, filePath, startLine, 'No PR found for this range.', detailPanel);
+      await showTraceResult(display, result, filePath, startLine, 'No PR found for this range.', detailPanel, endLine);
     } catch (error) {
       handleTraceError(error, statusBar);
     }

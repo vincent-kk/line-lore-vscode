@@ -6,7 +6,7 @@ export class DetailPanelManager {
 
   constructor(private readonly extensionUri: vscode.Uri) {}
 
-  show(filePath: string, line: number, result: TraceFullResult): void {
+  show(filePath: string, line: number, result: TraceFullResult, endLine?: number): void {
     if (this.panel) {
       this.panel.reveal(vscode.ViewColumn.Beside);
     } else {
@@ -19,7 +19,7 @@ export class DetailPanelManager {
       this.panel.onDidDispose(() => { this.panel = undefined; });
     }
 
-    this.panel.webview.html = this.buildHtml(filePath, line, result);
+    this.panel.webview.html = this.buildHtml(filePath, line, result, endLine);
   }
 
   dispose(): void {
@@ -27,8 +27,9 @@ export class DetailPanelManager {
     this.panel = undefined;
   }
 
-  private buildHtml(filePath: string, line: number, result: TraceFullResult): string {
+  private buildHtml(filePath: string, line: number, result: TraceFullResult, endLine?: number): string {
     const fileName = filePath.split('/').pop() ?? filePath;
+    const lineLabel = endLine ? `L${line}-L${endLine}` : `L${line}`;
     const nodesHtml = result.nodes.map(node => {
       const icon = this.getNodeIcon(node.type);
       const confidence = node.confidence ? ` [${node.confidence}]` : '';
@@ -123,7 +124,7 @@ export class DetailPanelManager {
 </head>
 <body>
   <h1>Line Lore — Trace Result</h1>
-  <div class="file-info">${this.escapeHtml(fileName)} : L${line}</div>
+  <div class="file-info">${this.escapeHtml(fileName)} : ${lineLabel}</div>
   ${nodesHtml}
   <div class="section-title">Operating Level</div>
   <div>Level ${result.operatingLevel} (${levelLabel})</div>

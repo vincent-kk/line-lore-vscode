@@ -12,6 +12,7 @@ export async function showTraceResult(
   line: number,
   noFoundLabel: string,
   detailPanel?: DetailPanelManager,
+  endLine?: number,
 ): Promise<void> {
   if (display.found && display.prUrl) {
     const buttons = detailPanel
@@ -27,7 +28,7 @@ export async function showTraceResult(
     } else if (action === 'Copy Link') {
       void vscode.env.clipboard.writeText(display.prUrl);
     } else if (action === 'Show Details' && detailPanel) {
-      detailPanel.show(filePath, line, result);
+      detailPanel.show(filePath, line, result, endLine);
     }
   } else {
     void vscode.window.showWarningMessage(

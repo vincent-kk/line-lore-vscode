@@ -6,6 +6,7 @@ import { executeTracePR } from './tracePR.js';
 import { executeTracePRRange } from './tracePRRange.js';
 import { executeHealthCheck } from './healthCheck.js';
 import { executeClearCache } from './clearCache.js';
+import { executeGraphExplore } from './graphExplore.js';
 
 export function registerCommands(
   context: vscode.ExtensionContext,
@@ -19,5 +20,6 @@ export function registerCommands(
     vscode.commands.registerCommand('lineLore.tracePRRange', executeTracePRRange(adapter, statusBar, detailPanel, decoration)),
     vscode.commands.registerCommand('lineLore.healthCheck', executeHealthCheck(adapter)),
     vscode.commands.registerCommand('lineLore.clearCache', executeClearCache(adapter)),
+    vscode.commands.registerCommand('lineLore.graphExplore', executeGraphExplore(adapter, statusBar, detailPanel)),
   );
 }

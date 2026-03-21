@@ -42,6 +42,7 @@
         "tracePRRange.ts",
         "healthCheck.ts",
         "clearCache.ts",
+        "graphExplore.ts",
         "hoverProvider.ts",
         "decorationProvider.ts",
         "statusBar.ts",

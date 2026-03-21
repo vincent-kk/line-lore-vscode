@@ -7,7 +7,7 @@ export class LineLoreAdapter {
     filePath: string,
     line: number,
     endLine?: number,
-    overrides?: Partial<Pick<TraceOptions, 'deep' | 'noAst' | 'noCache'>>,
+    overrides?: Partial<Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'graphDepth'>>,
   ): Promise<TraceFullResult> {
     const config = vscode.workspace.getConfiguration('lineLore');
     const options: TraceOptions = {
@@ -17,6 +17,7 @@ export class LineLoreAdapter {
       deep: overrides?.deep ?? config.get<boolean>('trace.deep', false),
       noAst: overrides?.noAst ?? config.get<boolean>('trace.noAst', false),
       noCache: overrides?.noCache ?? config.get<boolean>('trace.noCache', false),
+      ...(overrides?.graphDepth !== undefined && { graphDepth: overrides.graphDepth }),
     };
     return trace(options);
   }

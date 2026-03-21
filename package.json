@@ -52,6 +52,10 @@
       {
         "command": "lineLore.clearCache",
         "title": "Line Lore: Clear Cache"
+      },
+      {
+        "command": "lineLore.graphExplore",
+        "title": "Line Lore: Explore Graph"
       }
     ],
     "menus": {
@@ -82,6 +86,10 @@
         },
         {
           "command": "lineLore.clearCache",
+          "when": "lineLore.gitDetected"
+        },
+        {
+          "command": "lineLore.graphExplore",
           "when": "lineLore.gitDetected"
         }
       ]
