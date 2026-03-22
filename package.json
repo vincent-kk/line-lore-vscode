@@ -2,7 +2,7 @@
   "name": "line-lore",
   "displayName": "Line Lore",
   "description": "Trace any code line back to its origin Pull Request",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "lumy-pack",
   "repository": {
     "type": "git",
