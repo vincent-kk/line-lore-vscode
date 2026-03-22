@@ -18,12 +18,11 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
       return undefined;
     }
 
+    const filePath = document.uri.fsPath;
+    const line = position.line + 1;
     const cancelDisposable = { disposed: false, dispose() { this.disposed = true; } };
 
     try {
-      const filePath = document.uri.fsPath;
-      const line = position.line + 1;
-
       const result = await Promise.race([
         this.adapter.traceCached(filePath, line),
         new Promise<never>((_, reject) => {

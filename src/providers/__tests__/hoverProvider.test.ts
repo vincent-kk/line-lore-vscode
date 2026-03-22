@@ -82,7 +82,7 @@ describe('LineLoreHoverProvider', () => {
 
     expect(result).toBeDefined();
     expect(vscode.MarkdownString).toHaveBeenCalledWith(
-      '$(search) [Line Lore: Trace PR](command:lineLore.tracePR)',
+      `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?${encodeURIComponent(JSON.stringify(['/workspace/src/auth.ts', 42]))})`,
     );
   });
 
@@ -115,7 +115,7 @@ describe('LineLoreHoverProvider', () => {
 
     expect(result).toBeDefined();
     expect(vscode.MarkdownString).toHaveBeenCalledWith(
-      '$(search) [Line Lore: Trace PR](command:lineLore.tracePR)',
+      `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?${encodeURIComponent(JSON.stringify(['/workspace/src/auth.ts', 42]))})`,
     );
   });
 

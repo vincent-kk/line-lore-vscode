@@ -60,6 +60,10 @@
         "title": "Line Lore: Explore Graph"
       },
       {
+        "command": "lineLore.traceFromHover",
+        "title": "Line Lore: Trace From Hover"
+      },
+      {
         "command": "lineLore.copyPrLink",
         "title": "Line Lore: Copy PR Link"
       },
@@ -101,6 +105,10 @@
         {
           "command": "lineLore.graphExplore",
           "when": "lineLore.gitDetected"
+        },
+        {
+          "command": "lineLore.traceFromHover",
+          "when": "false"
         },
         {
           "command": "lineLore.copyPrLink",

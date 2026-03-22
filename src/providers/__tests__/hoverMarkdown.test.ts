@@ -59,10 +59,11 @@ describe('formatHoverMarkdown', () => {
     expect(value).toContain(`command:lineLore.showDetails?${expectedArgs}`);
   });
 
-  it('includes Re-trace link', () => {
+  it('includes Re-trace link with traceFromHover and encoded args', () => {
     const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
     const value = (md as unknown as { value: string }).value;
 
-    expect(value).toContain('command:lineLore.tracePR');
+    const expectedArgs = encodeURIComponent(JSON.stringify(['/src/auth.ts', 10]));
+    expect(value).toContain(`command:lineLore.traceFromHover?${expectedArgs}`);
   });
 });

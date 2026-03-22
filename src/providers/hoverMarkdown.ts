@@ -26,7 +26,8 @@ export function formatHoverMarkdown(
   );
 
   md.appendMarkdown('\n\n---\n\n');
-  md.appendMarkdown('$(refresh) [Re-trace](command:lineLore.tracePR)');
+  const retraceArgs = encodeURIComponent(JSON.stringify([filePath, line]));
+  md.appendMarkdown(`$(refresh) [Re-trace](command:lineLore.traceFromHover?${retraceArgs})`);
 
   return md;
 }

@@ -2,8 +2,8 @@
 
 - Register HoverProvider for all file types with dynamic enable/disable
 - HoverProvider checks cache via adapter.traceCached() on hover
-- Cache hit with PR: display rich hover (PR link, copy, details, re-trace)
-- Cache miss or error: display static "Trace PR" command link (fallback)
+- Cache hit with PR: display rich hover (PR link, copy, details, re-trace with encoded args)
+- Cache miss or error: display static "Trace PR" fallback link → invokes lineLore.traceFromHover with [filePath, line] args
 - Respect CancellationToken via Promise.race to abort stale hovers
 - Respect lineLore.hoverProvider.enabled configuration dynamically
 - DecorationController shows inline "← PR #N" ghost text after trace
@@ -22,6 +22,14 @@
 - `DecorationController.clear()`: void
 - `DecorationController.dispose()`: void
 
+## Hover Fallback → traceFromHover Flow
+
+1. User hovers on uncached line → provideHover returns fallback with `command:lineLore.traceFromHover?[filePath, line]`
+2. User clicks → traceFromHover command executes: statusBar loading → adapter.trace → cache populated
+3. Primary feedback: DecorationController shows `← PR #N` inline (always succeeds)
+4. Secondary feedback: editor.action.showHover re-triggered (best-effort, works if cursor hasn't moved)
+5. Re-trace button in rich hover also invokes traceFromHover with same flow
+
 ## Last Updated
 
-2026-03-22
+2026-03-23
