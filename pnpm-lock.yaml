@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@lumy-pack/line-lore':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
     devDependencies:
       '@eslint/js':
         specifier: ^9.13.0
@@ -483,8 +483,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@lumy-pack/line-lore@0.0.6':
-    resolution: {integrity: sha512-0yMCfm1uUUuTCsg394Okqbmmy4ZT7hy+v6KkXQDsdI5KpqLLDb3XT/xQA16XyzryWXjH8yFKYBnFUGq+EhPoPQ==}
+  '@lumy-pack/line-lore@0.0.7':
+    resolution: {integrity: sha512-SVAtduOJNOOUNCWmH2cNUCXh6fXyxqI7NXEeNTJCzaD31PxeffPxgrgWjRh6dmG/+5D/6Pt4URRomTtfkXBHVg==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -3139,7 +3139,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@lumy-pack/line-lore@0.0.6':
+  '@lumy-pack/line-lore@0.0.7':
     dependencies:
       '@winglet/common-utils': 0.11.2
       commander: 12.1.0

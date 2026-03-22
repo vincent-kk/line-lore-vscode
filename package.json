@@ -162,7 +162,7 @@
     }
   },
   "dependencies": {
-    "@lumy-pack/line-lore": "0.0.6"
+    "@lumy-pack/line-lore": "0.0.7"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",
