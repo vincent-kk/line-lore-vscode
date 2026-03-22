@@ -49,8 +49,9 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
       }
     }
 
+    const fallbackArgs = encodeURIComponent(JSON.stringify([filePath, line]));
     const md = new vscode.MarkdownString(
-      '$(search) [Line Lore: Trace PR](command:lineLore.tracePR)',
+      `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?${fallbackArgs})`,
     );
     md.isTrusted = true;
     md.supportThemeIcons = true;
