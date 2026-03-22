@@ -25,6 +25,8 @@ vi.mock('vscode', () => ({
 
 import * as vscode from 'vscode';
 
+const mockAdapter = { traceCached: vi.fn() } as never;
+
 describe('ProviderManager', () => {
   const mockContext = {
     subscriptions: { push: vi.fn() },
@@ -38,7 +40,7 @@ describe('ProviderManager', () => {
   });
 
   it('registers hover provider when enabled', () => {
-    const manager = new ProviderManager();
+    const manager = new ProviderManager(mockAdapter);
     manager.register(mockContext as never);
 
     expect(vscode.languages.registerHoverProvider).toHaveBeenCalledWith('*', expect.anything());
@@ -46,14 +48,14 @@ describe('ProviderManager', () => {
 
   it('does not register hover provider when disabled', () => {
     hoverEnabled = false;
-    const manager = new ProviderManager();
+    const manager = new ProviderManager(mockAdapter);
     manager.register(mockContext as never);
 
     expect(vscode.languages.registerHoverProvider).not.toHaveBeenCalled();
   });
 
   it('disposes hover provider on config change to disabled', () => {
-    const manager = new ProviderManager();
+    const manager = new ProviderManager(mockAdapter);
     manager.register(mockContext as never);
 
     hoverEnabled = false;
@@ -64,7 +66,7 @@ describe('ProviderManager', () => {
 
   it('registers hover provider on config change to enabled', () => {
     hoverEnabled = false;
-    const manager = new ProviderManager();
+    const manager = new ProviderManager(mockAdapter);
     manager.register(mockContext as never);
     vi.clearAllMocks();
 

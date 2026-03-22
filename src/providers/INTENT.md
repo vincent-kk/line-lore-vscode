@@ -4,14 +4,14 @@ Implements HoverProvider and future provider registrations.
 
 ## Public API
 
-- `registerProviders(context)` -- registers all providers, returns disposables
+- `registerProviders(context, adapter, detailPanel?)` -- registers all providers
 
 ## Always do
 
 - Put registration logic in register.ts (not index.ts)
 - Check config settings before registering providers
 - Set isTrusted and supportThemeIcons on MarkdownString
-- Return command links only; never make API calls in providers
+- Use CancellationToken to abort cache reads when hover is dismissed
 
 ## Ask first
 
@@ -20,6 +20,6 @@ Implements HoverProvider and future provider registrations.
 
 ## Never do
 
-- Make API calls during hover (zero-cost until click)
+- Make network or git calls during hover; local cache-only reads are permitted
 - Import from commands/ directly; use command IDs as strings
 - Register providers that ignore user configuration

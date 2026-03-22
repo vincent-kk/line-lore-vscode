@@ -37,7 +37,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   );
 
   registerCommands(context, adapter, statusBar, detailPanel);
-  registerProviders(context);
+  registerProviders(context, adapter);
 
   try {
     const cwd = folders[0]?.uri.fsPath;

@@ -31,6 +31,19 @@ export class LineLoreAdapter {
     return health(cwd ? { cwd } : undefined);
   }
 
+  async traceCached(
+    filePath: string,
+    line: number,
+  ): Promise<TraceFullResult> {
+    const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))?.uri.fsPath;
+    return trace({
+      file: filePath,
+      line,
+      ...(cwd !== undefined && { cwd }),
+      cacheOnly: true,
+    });
+  }
+
   async clearCache(): Promise<void> {
     return clearCache();
   }

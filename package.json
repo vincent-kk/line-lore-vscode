@@ -57,6 +57,14 @@
       {
         "command": "lineLore.graphExplore",
         "title": "Line Lore: Explore Graph"
+      },
+      {
+        "command": "lineLore.copyPrLink",
+        "title": "Line Lore: Copy PR Link"
+      },
+      {
+        "command": "lineLore.showDetails",
+        "title": "Line Lore: Show Details"
       }
     ],
     "menus": {
@@ -92,6 +100,14 @@
         {
           "command": "lineLore.graphExplore",
           "when": "lineLore.gitDetected"
+        },
+        {
+          "command": "lineLore.copyPrLink",
+          "when": "false"
+        },
+        {
+          "command": "lineLore.showDetails",
+          "when": "false"
         }
       ]
     },
@@ -137,7 +153,7 @@
     }
   },
   "dependencies": {
-    "@lumy-pack/line-lore": "0.0.5"
+    "@lumy-pack/line-lore": "0.0.6"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",

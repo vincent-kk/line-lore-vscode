@@ -1,8 +1,13 @@
 import * as vscode from 'vscode';
+import type { LineLoreAdapter } from '../core/index.js';
 import { LineLoreHoverProvider } from './hoverProvider.js';
 
 export class ProviderManager {
   private hoverDisposable: vscode.Disposable | undefined;
+
+  constructor(
+    private adapter: LineLoreAdapter,
+  ) {}
 
   register(context: vscode.ExtensionContext): void {
     this.updateHoverProvider(context);
@@ -24,7 +29,7 @@ export class ProviderManager {
     if (enabled && !this.hoverDisposable) {
       this.hoverDisposable = vscode.languages.registerHoverProvider(
         '*',
-        new LineLoreHoverProvider(),
+        new LineLoreHoverProvider(this.adapter),
       );
       context.subscriptions.push(this.hoverDisposable);
     } else if (!enabled && this.hoverDisposable) {
@@ -34,7 +39,10 @@ export class ProviderManager {
   }
 }
 
-export function registerProviders(context: vscode.ExtensionContext): void {
-  const manager = new ProviderManager();
+export function registerProviders(
+  context: vscode.ExtensionContext,
+  adapter: LineLoreAdapter,
+): void {
+  const manager = new ProviderManager(adapter);
   manager.register(context);
 }
