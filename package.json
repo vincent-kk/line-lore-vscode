@@ -189,6 +189,9 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "vsce:package": "pnpm vsce package --no-dependencies",
-    "vsce:publish": "pnpm vsce publish --no-dependencies"
+    "vsce:publish": "pnpm vsce publish --no-dependencies",
+    "version:patch": "bash scripts/version.sh patch",
+    "version:minor": "bash scripts/version.sh minor",
+    "version:major": "bash scripts/version.sh major"
   }
 }
