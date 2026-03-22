@@ -10,9 +10,8 @@ export function formatHoverMarkdown(
   md.isTrusted = true;
   md.supportThemeIcons = true;
 
-  md.appendMarkdown(
-    `$(git-pull-request) **PR #${display.prNumber}**: [${display.prTitle}](${display.prUrl})\n\n`,
-  );
+  md.appendMarkdown(`$(git-pull-request) **PR #${display.prNumber}**\n\n`);
+  md.appendMarkdown(`[${display.prTitle}](${display.prUrl})\n\n`);
   md.appendMarkdown('---\n\n');
 
   const copyArgs = encodeURIComponent(JSON.stringify([display.prUrl]));
