@@ -2,15 +2,24 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LineLoreHoverProvider } from '../hoverProvider.js';
 
 vi.mock('vscode', () => {
-  const MarkdownString = vi.fn(function (this: Record<string, unknown>, value?: string) {
+  const MarkdownString = vi.fn(function (
+    this: Record<string, unknown>,
+    value?: string,
+  ) {
     this.value = value ?? '';
     this.isTrusted = false;
     this.supportThemeIcons = false;
-    this.appendMarkdown = vi.fn(function (this: Record<string, unknown>, val: string) {
+    this.appendMarkdown = vi.fn(function (
+      this: Record<string, unknown>,
+      val: string,
+    ) {
       this.value = (this.value as string) + val;
     });
   });
-  const Hover = vi.fn(function (this: Record<string, unknown>, contents: unknown) {
+  const Hover = vi.fn(function (
+    this: Record<string, unknown>,
+    contents: unknown,
+  ) {
     this.contents = contents;
   });
   return {
@@ -30,13 +39,18 @@ vi.mock('../../core/index.js', () => ({
 
 vi.mock('../hoverMarkdown.js', () => ({
   formatHoverMarkdown: vi.fn(() => {
-    const md = { value: 'rich-hover', isTrusted: true, supportThemeIcons: true };
+    const md = {
+      value: 'rich-hover',
+      isTrusted: true,
+      supportThemeIcons: true,
+    };
     return md;
   }),
 }));
 
 import * as vscode from 'vscode';
 import { formatTraceResult } from '../../core/index.js';
+import { formatHoverMarkdown } from '../hoverMarkdown.js';
 
 const mockTraceCached = vi.fn();
 const mockAdapter = { traceCached: mockTraceCached } as never;
@@ -46,9 +60,8 @@ describe('LineLoreHoverProvider', () => {
 
   const mockDocument = {
     uri: { fsPath: '/workspace/src/auth.ts' },
+    lineAt: vi.fn(() => ({ text: 'const foo = bar;' })),
   } as never;
-
-  const mockPosition = { line: 41 } as never;
 
   const mockToken = {
     onCancellationRequested: vi.fn(() => ({ dispose: vi.fn() })),
@@ -57,61 +70,200 @@ describe('LineLoreHoverProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(vscode.workspace.getConfiguration).mockImplementation(
-      () => ({ get: vi.fn((_key: string, defaultValue: unknown) => defaultValue) }) as never,
+      () =>
+        ({
+          get: vi.fn((_key: string, defaultValue: unknown) => defaultValue),
+        }) as never,
     );
     provider = new LineLoreHoverProvider(mockAdapter);
   });
 
-  // Note: detailPanel removed from HoverProvider constructor — only adapter needed
+  it('returns undefined when hovering on code text (position within text)', async () => {
+    const positionOnCode = { line: 41, character: 5 } as never;
 
-  it('returns static fallback when cache misses (empty nodes)', async () => {
-    const emptyResult = {
+    const result = await provider.provideHover(
+      mockDocument,
+      positionOnCode,
+      mockToken,
+    );
+
+    expect(result).toBeUndefined();
+    expect(mockTraceCached).not.toHaveBeenCalled();
+  });
+
+  it('calls traceCached twice (normal + origin) via Promise.allSettled', async () => {
+    const positionAtEnd = { line: 41, character: 16 } as never;
+    mockTraceCached.mockResolvedValue({
       nodes: [],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: [],
-    };
-    mockTraceCached.mockResolvedValue(emptyResult);
+    });
     vi.mocked(formatTraceResult).mockReturnValue({
       found: false,
       operatingLevel: 0 as const,
       warnings: [],
     });
 
-    const result = await provider.provideHover(mockDocument, mockPosition, mockToken);
+    await provider.provideHover(mockDocument, positionAtEnd, mockToken);
 
-    expect(result).toBeDefined();
-    expect(vscode.MarkdownString).toHaveBeenCalledWith(
-      `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?${encodeURIComponent(JSON.stringify(['/workspace/src/auth.ts', 42]))})`,
+    expect(mockTraceCached).toHaveBeenCalledTimes(2);
+    expect(mockTraceCached).toHaveBeenCalledWith(
+      '/workspace/src/auth.ts',
+      42,
+    );
+    expect(mockTraceCached).toHaveBeenCalledWith(
+      '/workspace/src/auth.ts',
+      42,
+      'origin',
     );
   });
 
-  it('returns rich hover when cache hits with PR', async () => {
-    const mockResult = {
-      nodes: [{ type: 'pull_request', prNumber: 123, prTitle: 'Fix bug', prUrl: 'https://github.com/pr/123' }],
-      operatingLevel: 2,
+  it('returns rich hover when normal cache hits with PR', async () => {
+    const positionAtEnd = { line: 41, character: 16 } as never;
+    mockTraceCached.mockImplementation(
+      (_filePath: string, _line: number, mode?: string) => {
+        if (mode === 'origin') {
+          return Promise.resolve({
+            nodes: [],
+            operatingLevel: 0,
+            warnings: [],
+          });
+        }
+        return Promise.resolve({
+          nodes: [
+            {
+              type: 'pull_request',
+              prNumber: 123,
+              prTitle: 'Fix bug',
+              prUrl: 'https://github.com/pr/123',
+            },
+          ],
+          operatingLevel: 2,
+          warnings: [],
+        });
+      },
+    );
+    vi.mocked(formatTraceResult).mockImplementation((result) => {
+      const prNode = result.nodes.find(
+        (n: { type: string }) => n.type === 'pull_request',
+      ) as { prNumber?: number; prTitle?: string; prUrl?: string } | undefined;
+      if (prNode) {
+        return {
+          found: true,
+          prNumber: prNode.prNumber,
+          prTitle: prNode.prTitle,
+          prUrl: prNode.prUrl,
+          operatingLevel: result.operatingLevel,
+          warnings: [],
+        };
+      }
+      return {
+        found: false,
+        operatingLevel: result.operatingLevel,
+        warnings: [],
+      };
+    });
+
+    const result = await provider.provideHover(
+      mockDocument,
+      positionAtEnd,
+      mockToken,
+    );
+
+    expect(result).toBeDefined();
+    expect(formatHoverMarkdown).toHaveBeenCalled();
+  });
+
+  it('returns rich hover when only origin-mode cache hits', async () => {
+    const positionAtEnd = { line: 41, character: 16 } as never;
+    mockTraceCached.mockImplementation(
+      (_filePath: string, _line: number, mode?: string) => {
+        if (mode === 'origin') {
+          return Promise.resolve({
+            nodes: [
+              {
+                type: 'pull_request',
+                prNumber: 99,
+                prTitle: 'Refactor auth',
+                prUrl: 'https://github.com/pr/99',
+              },
+            ],
+            operatingLevel: 2,
+            warnings: [],
+          });
+        }
+        return Promise.resolve({
+          nodes: [],
+          operatingLevel: 0,
+          warnings: [],
+        });
+      },
+    );
+    vi.mocked(formatTraceResult).mockImplementation((result) => {
+      const prNode = result.nodes.find(
+        (n: { type: string }) => n.type === 'pull_request',
+      ) as { prNumber?: number; prTitle?: string; prUrl?: string } | undefined;
+      if (prNode) {
+        return {
+          found: true,
+          prNumber: prNode.prNumber,
+          prTitle: prNode.prTitle,
+          prUrl: prNode.prUrl,
+          operatingLevel: result.operatingLevel,
+          warnings: [],
+        };
+      }
+      return {
+        found: false,
+        operatingLevel: result.operatingLevel,
+        warnings: [],
+      };
+    });
+
+    const result = await provider.provideHover(
+      mockDocument,
+      positionAtEnd,
+      mockToken,
+    );
+
+    expect(result).toBeDefined();
+    expect(formatHoverMarkdown).toHaveBeenCalled();
+    const [display, , , originDisplay] = vi.mocked(formatHoverMarkdown).mock
+      .calls[0];
+    expect((display as { found: boolean }).found).toBe(false);
+    expect((originDisplay as { found: boolean }).found).toBe(true);
+  });
+
+  it('returns static fallback when neither variant finds a PR', async () => {
+    const positionAtEnd = { line: 41, character: 20 } as never;
+    mockTraceCached.mockResolvedValue({
+      nodes: [],
+      operatingLevel: 0,
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: [],
-    };
-    mockTraceCached.mockResolvedValue(mockResult);
+    });
     vi.mocked(formatTraceResult).mockReturnValue({
-      found: true,
-      prNumber: 123,
-      prTitle: 'Fix bug',
-      prUrl: 'https://github.com/pr/123',
-      operatingLevel: 2 as const,
+      found: false,
+      operatingLevel: 0 as const,
       warnings: [],
     });
 
-    const result = await provider.provideHover(mockDocument, mockPosition, mockToken);
-
-    expect(result).toBeDefined();
-    expect(mockTraceCached).toHaveBeenCalledWith('/workspace/src/auth.ts', 42);
-  });
-
-  it('returns static fallback when traceCached throws', async () => {
-    mockTraceCached.mockRejectedValue(new Error('cache error'));
-
-    const result = await provider.provideHover(mockDocument, mockPosition, mockToken);
+    const result = await provider.provideHover(
+      mockDocument,
+      positionAtEnd,
+      mockToken,
+    );
 
     expect(result).toBeDefined();
     expect(vscode.MarkdownString).toHaveBeenCalledWith(
@@ -121,35 +273,22 @@ describe('LineLoreHoverProvider', () => {
 
   it('returns undefined when hover provider is disabled', async () => {
     const mockGet = vi.fn((key: string) => {
-      if (key === 'hoverProvider.enabled') { return false; }
+      if (key === 'hoverProvider.enabled') {
+        return false;
+      }
       return true;
     });
-    vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({ get: mockGet } as never);
+    vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+      get: mockGet,
+    } as never);
 
-    const result = await provider.provideHover(mockDocument, mockPosition, mockToken);
+    const positionAtEnd = { line: 41, character: 20 } as never;
+    const result = await provider.provideHover(
+      mockDocument,
+      positionAtEnd,
+      mockToken,
+    );
 
     expect(result).toBeUndefined();
-  });
-
-  it('sets isTrusted and supportThemeIcons on static fallback', async () => {
-    mockTraceCached.mockResolvedValue({
-      nodes: [],
-      operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
-      warnings: [],
-    });
-    vi.mocked(formatTraceResult).mockReturnValue({
-      found: false,
-      operatingLevel: 0 as const,
-      warnings: [],
-    });
-
-    const result = await provider.provideHover(mockDocument, mockPosition, mockToken) as unknown as {
-      contents: { isTrusted: boolean; supportThemeIcons: boolean };
-    };
-
-    expect(result).toBeDefined();
-    expect(result.contents.isTrusted).toBe(true);
-    expect(result.contents.supportThemeIcons).toBe(true);
   });
 });

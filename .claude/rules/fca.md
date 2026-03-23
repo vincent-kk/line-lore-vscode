@@ -8,12 +8,12 @@ The dependency graph MUST be a DAG. Consumers MUST import only from entry points
 
 ## Node Types
 
-| Type | INTENT.md | Children | Entry point | Description |
-|---|---|---|---|---|
-| `fractal` | required | allowed | required | Independent module with public API |
-| `organ` | forbidden | none | not required | Leaf compartment (single concern) |
-| `pure-function` | optional | none | not required | Stateless functions, no side effects |
-| `hybrid` | optional | allowed | required | Transitional node (fractal + organ traits) |
+| Type            | INTENT.md | Children | Entry point  | Description                                |
+| --------------- | --------- | -------- | ------------ | ------------------------------------------ |
+| `fractal`       | required  | allowed  | required     | Independent module with public API         |
+| `organ`         | forbidden | none     | not required | Leaf compartment (single concern)          |
+| `pure-function` | optional  | none     | not required | Stateless functions, no side effects       |
+| `hybrid`        | optional  | allowed  | required     | Transitional node (fractal + organ traits) |
 
 ---
 
@@ -70,7 +70,9 @@ export { myFunction } from './my-function.js';
 export type { MyType } from './types.js';
 
 // VIOLATION (direct declaration):
-export function myFunction() { return 42; }
+export function myFunction() {
+  return 42;
+}
 export const MY_CONSTANT = 'value';
 ```
 
@@ -144,11 +146,11 @@ export const MY_CONSTANT = 'value';
 
 ## Quality Thresholds
 
-| Metric | Threshold | Action |
-|---|---|---|
-| LCOM4 (Lack of Cohesion) | >= 2 | Split into separate modules |
-| Cyclomatic Complexity | > 15 | Compress or abstract |
-| File size | > 500 lines | Consider splitting |
+| Metric                   | Threshold   | Action                      |
+| ------------------------ | ----------- | --------------------------- |
+| LCOM4 (Lack of Cohesion) | >= 2        | Split into separate modules |
+| Cyclomatic Complexity    | > 15        | Compress or abstract        |
+| File size                | > 500 lines | Consider splitting          |
 
 **Test file conventions (3+12 rule)**: max **3 basic** (happy path) + **12 complex** (edge cases) = **15 total** per spec file. Exceeding 15 signals the module should be split.
 

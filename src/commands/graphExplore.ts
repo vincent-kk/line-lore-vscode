@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
-import type { StatusBarController, DetailPanelManager } from '../views/index.js';
+import type {
+  StatusBarController,
+  DetailPanelManager,
+} from '../views/index.js';
 import { handleTraceError } from './traceHelpers.js';
 
 export function executeGraphExplore(
@@ -11,14 +14,18 @@ export function executeGraphExplore(
   return async () => {
     const prInput = await vscode.window.showInputBox({
       prompt: 'Enter PR number to explore its issue graph',
-      validateInput: v => {
+      validateInput: (v) => {
         const n = parseInt(v, 10);
-        if (isNaN(n) || n < 1) { return 'Enter a valid PR number'; }
+        if (isNaN(n) || n < 1) {
+          return 'Enter a valid PR number';
+        }
         return null;
       },
     });
 
-    if (!prInput) { return; }
+    if (!prInput) {
+      return;
+    }
 
     const prNumber = parseInt(prInput, 10);
 
@@ -27,18 +34,25 @@ export function executeGraphExplore(
       const result = await adapter.graph({ type: 'pr', number: prNumber });
 
       if (detailPanel) {
-        const filePath = vscode.window.activeTextEditor?.document.uri.fsPath ?? '';
-        const line = (vscode.window.activeTextEditor?.selection.active.line ?? 0) + 1;
+        const filePath =
+          vscode.window.activeTextEditor?.document.uri.fsPath ?? '';
+        const line =
+          (vscode.window.activeTextEditor?.selection.active.line ?? 0) + 1;
         detailPanel.show(filePath, line, {
           nodes: result.nodes,
           operatingLevel: 2,
-          featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+          featureFlags: {
+            astDiff: false,
+            deepTrace: false,
+            commitGraph: false,
+            graphql: false,
+          },
           warnings: [],
         });
       }
 
-      const issueNodes = result.nodes.filter(n => n.type === 'issue');
-      const prNodes = result.nodes.filter(n => n.type === 'pull_request');
+      const issueNodes = result.nodes.filter((n) => n.type === 'issue');
+      const prNodes = result.nodes.filter((n) => n.type === 'pull_request');
 
       if (issueNodes.length > 0) {
         void vscode.window.showInformationMessage(

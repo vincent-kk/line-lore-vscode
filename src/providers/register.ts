@@ -5,15 +5,13 @@ import { LineLoreHoverProvider } from './hoverProvider.js';
 export class ProviderManager {
   private hoverDisposable: vscode.Disposable | undefined;
 
-  constructor(
-    private adapter: LineLoreAdapter,
-  ) {}
+  constructor(private adapter: LineLoreAdapter) {}
 
   register(context: vscode.ExtensionContext): void {
     this.updateHoverProvider(context);
 
     context.subscriptions.push(
-      vscode.workspace.onDidChangeConfiguration(e => {
+      vscode.workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration('lineLore.hoverProvider.enabled')) {
           this.updateHoverProvider(context);
         }

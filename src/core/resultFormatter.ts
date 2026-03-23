@@ -1,8 +1,12 @@
 import { LineLoreErrorCode } from '@lumy-pack/line-lore';
-import type { TraceFullResult, DisplayResult, ErrorInfo } from '../types/index.js';
+import type {
+  TraceFullResult,
+  DisplayResult,
+  ErrorInfo,
+} from '../types/index.js';
 
 export function formatTraceResult(result: TraceFullResult): DisplayResult {
-  const prNode = result.nodes.find(n => n.type === 'pull_request');
+  const prNode = result.nodes.find((n) => n.type === 'pull_request');
 
   if (prNode) {
     return {
@@ -10,7 +14,7 @@ export function formatTraceResult(result: TraceFullResult): DisplayResult {
       prNumber: prNode.prNumber,
       prTitle: prNode.prTitle,
       prUrl: prNode.prUrl,
-      commitSha: result.nodes.find(n => n.sha)?.sha,
+      commitSha: result.nodes.find((n) => n.sha)?.sha,
       operatingLevel: result.operatingLevel,
       warnings: result.warnings,
       confidence: prNode.confidence,
@@ -19,7 +23,8 @@ export function formatTraceResult(result: TraceFullResult): DisplayResult {
     };
   }
 
-  const commitNode = result.nodes.find(n => n.type === 'original_commit') ?? result.nodes[0];
+  const commitNode =
+    result.nodes.find((n) => n.type === 'original_commit') ?? result.nodes[0];
   return {
     found: false,
     commitSha: commitNode?.sha,
@@ -50,7 +55,8 @@ const tier1Messages: Record<string, ErrorInfo> = {
     severity: 'error',
   },
   [LineLoreErrorCode.CLI_NOT_AUTHENTICATED]: {
-    message: 'GitHub CLI not authenticated. Run `gh auth login` for full access.',
+    message:
+      'GitHub CLI not authenticated. Run `gh auth login` for full access.',
     code: LineLoreErrorCode.CLI_NOT_AUTHENTICATED,
     severity: 'warning',
   },
@@ -66,7 +72,11 @@ const tier1Messages: Record<string, ErrorInfo> = {
   },
 };
 
-const tier2Categories: Array<{ codes: string[]; message: string; severity: ErrorInfo['severity'] }> = [
+const tier2Categories: Array<{
+  codes: string[];
+  message: string;
+  severity: ErrorInfo['severity'];
+}> = [
   {
     codes: [
       LineLoreErrorCode.GIT_COMMAND_FAILED,

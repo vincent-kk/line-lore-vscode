@@ -45,16 +45,35 @@ describe('executeTracePRRange', () => {
 
   it('passes endLine when selection exists', async () => {
     mockAdapter.trace.mockResolvedValue({
-      nodes: [{ type: 'original_commit', sha: 'abc', trackingMethod: 'blame', confidence: 'exact' }],
+      nodes: [
+        {
+          type: 'original_commit',
+          sha: 'abc',
+          trackingMethod: 'blame',
+          confidence: 'exact',
+        },
+      ],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: [],
     });
 
-    const handler = executeTracePRRange(mockAdapter as never, mockStatusBar as never);
+    const handler = executeTracePRRange(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
-    expect(mockAdapter.trace).toHaveBeenCalledWith('/workspace/src/config.ts', 10, 50);
+    expect(mockAdapter.trace).toHaveBeenCalledWith(
+      '/workspace/src/config.ts',
+      10,
+      50,
+    );
   });
 
   it('falls back to single line when no selection', async () => {
@@ -66,15 +85,34 @@ describe('executeTracePRRange', () => {
     });
 
     mockAdapter.trace.mockResolvedValue({
-      nodes: [{ type: 'original_commit', sha: 'abc', trackingMethod: 'blame', confidence: 'exact' }],
+      nodes: [
+        {
+          type: 'original_commit',
+          sha: 'abc',
+          trackingMethod: 'blame',
+          confidence: 'exact',
+        },
+      ],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: [],
     });
 
-    const handler = executeTracePRRange(mockAdapter as never, mockStatusBar as never);
+    const handler = executeTracePRRange(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
-    expect(mockAdapter.trace).toHaveBeenCalledWith('/workspace/src/config.ts', 10, undefined);
+    expect(mockAdapter.trace).toHaveBeenCalledWith(
+      '/workspace/src/config.ts',
+      10,
+      undefined,
+    );
   });
 });

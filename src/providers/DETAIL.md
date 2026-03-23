@@ -1,34 +1,32 @@
 ## Requirements
 
-- Register HoverProvider for all file types with dynamic enable/disable
-- HoverProvider checks cache via adapter.traceCached() on hover
-- Cache hit with PR: display rich hover (PR link, copy, details, re-trace with encoded args)
-- Cache miss or error: display static "Trace PR" fallback link → invokes lineLore.traceFromHover with [filePath, line] args
-- Respect CancellationToken via Promise.race to abort stale hovers
-- Respect lineLore.hoverProvider.enabled configuration dynamically
-- DecorationController shows inline "← PR #N" ghost text after trace
-- Decoration auto-removes after configurable timeout or cursor move
-- Respect lineLore.inlineDecoration.enabled configuration
+- DecorationController shows inline "← PR #N" ghost text after trace with rich hover via hoverMessage
+- DecorationController shows cursor-line fallback decoration with "Trace PR" command link hover
+- Decoration auto-removes after configurable timeout or cursor move (rich decoration only)
+- Fallback decoration moves with cursor and checks cache before showing
+- Respect lineLore.hoverProvider.enabled for decoration-based hover
+- Respect lineLore.inlineDecoration.enabled for rich decoration display
+- ProviderManager manages cursor-line fallback lifecycle and config changes
 
 ## API Contracts
 
-- `registerProviders(context, adapter)`: void — creates ProviderManager and registers
-- `ProviderManager(adapter)`: constructor with adapter dependency
-- `ProviderManager.register(context)`: void — sets up hover + config listener
-- `LineLoreHoverProvider(adapter)`: constructor with adapter dependency
-- `LineLoreHoverProvider.provideHover(doc, pos, token)`: Promise<Hover | undefined>
+- `registerProviders(context, adapter, decoration)`: void — creates ProviderManager and registers
+- `ProviderManager(adapter, decoration)`: constructor with adapter and DecorationController dependencies
+- `ProviderManager.register(context)`: void — sets up fallback listener + config listener
+- `DecorationController.showDecoration(editor, line, prNumber, hoverMessage?)`: void — shows rich decoration with optional hover
+- `DecorationController.showFallback(editor, line)`: void — shows fallback decoration with Trace PR command hover
+- `DecorationController.clearFallback()`: void — clears fallback decoration only
+- `DecorationController.clear()`: void — clears rich decoration only
+- `DecorationController.dispose()`: void — disposes both decoration types
 - `formatHoverMarkdown(display, filePath, line)`: MarkdownString with PR info and command URIs
-- `DecorationController.showDecoration(editor, line, prNumber)`: void
-- `DecorationController.clear()`: void
-- `DecorationController.dispose()`: void
 
-## Hover Fallback → traceFromHover Flow
+## Cursor-Line Fallback Flow
 
-1. User hovers on uncached line → provideHover returns fallback with `command:lineLore.traceFromHover?[filePath, line]`
-2. User clicks → traceFromHover command executes: statusBar loading → adapter.trace → cache populated
-3. Primary feedback: DecorationController shows `← PR #N` inline (always succeeds)
-4. Secondary feedback: editor.action.showHover re-triggered (best-effort, works if cursor hasn't moved)
-5. Re-trace button in rich hover also invokes traceFromHover with same flow
+1. User places cursor on a line → ProviderManager checks cache via adapter.traceCached
+2. Cache miss → DecorationController.showFallback shows `···` with "Trace PR" hover
+3. User hovers over `···` → sees `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?[filePath, line])`
+4. User clicks → traceFromHover command executes: adapter.trace → cache populated → showDecoration with rich hover
+5. Cache hit → fallback cleared (no decoration shown, cache already has data)
 
 ## Last Updated
 

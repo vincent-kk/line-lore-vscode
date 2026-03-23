@@ -17,7 +17,9 @@ export class StatusBarController {
   }
 
   showPersistentLevel(level: OperatingLevel): void {
-    if (!this.item) { return; }
+    if (!this.item) {
+      return;
+    }
     this.persistentLevel = level;
     this.clearTimer();
     this.applyLevel(level);
@@ -25,7 +27,9 @@ export class StatusBarController {
   }
 
   showLoading(): void {
-    if (!this.item) { return; }
+    if (!this.item) {
+      return;
+    }
     this.clearTimer();
     this.item.text = '$(sync~spin) Line Lore: Tracing...';
     this.item.tooltip = 'Tracing line to PR...';
@@ -33,7 +37,9 @@ export class StatusBarController {
   }
 
   showResult(level: OperatingLevel): void {
-    if (!this.item) { return; }
+    if (!this.item) {
+      return;
+    }
     this.clearTimer();
     this.applyLevel(level);
     this.item.show();
@@ -41,7 +47,9 @@ export class StatusBarController {
   }
 
   showError(message: string): void {
-    if (!this.item) { return; }
+    if (!this.item) {
+      return;
+    }
     this.clearTimer();
     this.item.text = '$(error) Line Lore: Error';
     this.item.tooltip = message;
@@ -61,7 +69,9 @@ export class StatusBarController {
   }
 
   private applyLevel(level: OperatingLevel): void {
-    if (!this.item) { return; }
+    if (!this.item) {
+      return;
+    }
     let icon: string;
     if (level === 2) {
       icon = '$(git-pull-request)';

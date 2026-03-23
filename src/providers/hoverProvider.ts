@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
+import type { DisplayResult } from '../types/index.js';
 import { formatTraceResult } from '../core/index.js';
 import { formatHoverMarkdown } from './hoverMarkdown.js';
 
 export class LineLoreHoverProvider implements vscode.HoverProvider {
-  constructor(
-    private adapter: LineLoreAdapter,
-  ) {}
+  constructor(private adapter: LineLoreAdapter) {}
 
   async provideHover(
     document: vscode.TextDocument,
@@ -18,13 +17,26 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
       return undefined;
     }
 
+    const lineText = document.lineAt(position.line).text;
+    if (position.character < lineText.trimEnd().length) {
+      return undefined;
+    }
+
     const filePath = document.uri.fsPath;
     const line = position.line + 1;
-    const cancelDisposable = { disposed: false, dispose() { this.disposed = true; } };
+    const cancelDisposable = {
+      disposed: false,
+      dispose() {
+        this.disposed = true;
+      },
+    };
 
     try {
-      const result = await Promise.race([
-        this.adapter.traceCached(filePath, line),
+      const [normalSettled, originSettled] = await Promise.race([
+        Promise.allSettled([
+          this.adapter.traceCached(filePath, line),
+          this.adapter.traceCached(filePath, line, 'origin'),
+        ]),
         new Promise<never>((_, reject) => {
           const listener = token.onCancellationRequested(() => {
             reject(new Error('cancelled'));
@@ -36,9 +48,22 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
         }),
       ]);
 
-      const display = formatTraceResult(result);
-      if (display.found && display.prUrl) {
-        return new vscode.Hover(formatHoverMarkdown(display, filePath, line));
+      const display: DisplayResult | null =
+        normalSettled.status === 'fulfilled'
+          ? formatTraceResult(normalSettled.value)
+          : null;
+      const originDisplay: DisplayResult | null =
+        originSettled.status === 'fulfilled'
+          ? formatTraceResult(originSettled.value)
+          : null;
+
+      const normalFound = display?.found && display?.prUrl;
+      const originFound = originDisplay?.found && originDisplay?.prUrl;
+
+      if (normalFound || originFound) {
+        return new vscode.Hover(
+          formatHoverMarkdown(display, filePath, line, originDisplay),
+        );
       }
     } catch {
       // Cache failure or cancellation — fall through to static fallback

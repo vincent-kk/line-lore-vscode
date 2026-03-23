@@ -4,9 +4,7 @@
 
 ```jsonc
 {
-  "activationEvents": [
-    "onStartupFinished"
-  ]
+  "activationEvents": ["onStartupFinished"],
 }
 ```
 
@@ -57,7 +55,17 @@ line-lore-vscode/
 `@lumy-pack/line-lore`의 공개 인터페이스 정의는 [API-SPEC.md](./API-SPEC.md) 를 참고한다.
 
 ```typescript
-import { trace, graph, health, clearCache, LineLoreError, type TraceOptions, type TraceFullResult, type GraphOptions, type GraphResult } from '@lumy-pack/line-lore';
+import {
+  trace,
+  graph,
+  health,
+  clearCache,
+  LineLoreError,
+  type TraceOptions,
+  type TraceFullResult,
+  type GraphOptions,
+  type GraphResult,
+} from '@lumy-pack/line-lore';
 
 export class LineLoreAdapter {
   /**
@@ -70,7 +78,7 @@ export class LineLoreAdapter {
   async trace(
     filePath: string,
     line: number,
-    options?: Partial<TraceOptions>
+    options?: Partial<TraceOptions>,
   ): Promise<TraceFullResult> {
     return trace({
       file: filePath,
@@ -92,7 +100,7 @@ export class LineLoreAdapter {
 
   private getWorkspaceRoot(filePath: string): string {
     const folder = vscode.workspace.getWorkspaceFolder(
-      vscode.Uri.file(filePath)
+      vscode.Uri.file(filePath),
     );
     if (!folder) {
       throw new Error('File is not in any workspace folder');
@@ -135,7 +143,7 @@ VSCode는 multi-root workspace를 지원하므로, 파일이 속한 workspace fo
 ```typescript
 function getWorkspaceRoot(filePath: string): string {
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(
-    vscode.Uri.file(filePath)
+    vscode.Uri.file(filePath),
   );
   if (!workspaceFolder) {
     throw new Error('File is not in any workspace folder');

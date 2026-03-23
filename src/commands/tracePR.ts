@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
-import type { StatusBarController, DetailPanelManager } from '../views/index.js';
+import type {
+  StatusBarController,
+  DetailPanelManager,
+} from '../views/index.js';
 import { formatTraceResult } from '../core/index.js';
 import { showTraceResult, handleTraceError } from './traceHelpers.js';
 
@@ -25,7 +28,14 @@ export function executeTracePR(
       const display = formatTraceResult(result);
       statusBar.showResult(result.operatingLevel);
 
-      await showTraceResult(display, result, filePath, line, 'No PR found for this line.', detailPanel);
+      await showTraceResult(
+        display,
+        result,
+        filePath,
+        line,
+        'No PR found for this line.',
+        detailPanel,
+      );
     } catch (error) {
       handleTraceError(error, statusBar);
     }

@@ -18,15 +18,29 @@ vi.mock('vscode', () => ({
 import * as vscode from 'vscode';
 
 describe('executeGraphExplore', () => {
-  const mockAdapter = { trace: vi.fn(), graph: vi.fn(), health: vi.fn(), clearCache: vi.fn() };
-  const mockStatusBar = { showLoading: vi.fn(), showResult: vi.fn(), showError: vi.fn() };
+  const mockAdapter = {
+    trace: vi.fn(),
+    graph: vi.fn(),
+    health: vi.fn(),
+    clearCache: vi.fn(),
+  };
+  const mockStatusBar = {
+    showLoading: vi.fn(),
+    showResult: vi.fn(),
+    showError: vi.fn(),
+  };
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('does nothing when user cancels input', async () => {
     vi.mocked(vscode.window.showInputBox).mockResolvedValue(undefined);
 
-    const handler = executeGraphExplore(mockAdapter as never, mockStatusBar as never);
+    const handler = executeGraphExplore(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
     expect(mockAdapter.graph).not.toHaveBeenCalled();
@@ -36,7 +50,10 @@ describe('executeGraphExplore', () => {
     vi.mocked(vscode.window.showInputBox).mockResolvedValue('42');
     mockAdapter.graph.mockResolvedValue({ nodes: [], edges: [] });
 
-    const handler = executeGraphExplore(mockAdapter as never, mockStatusBar as never);
+    const handler = executeGraphExplore(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
     expect(mockAdapter.graph).toHaveBeenCalledWith({ type: 'pr', number: 42 });
@@ -47,14 +64,32 @@ describe('executeGraphExplore', () => {
     vi.mocked(vscode.window.showInputBox).mockResolvedValue('42');
     mockAdapter.graph.mockResolvedValue({
       nodes: [
-        { type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 42 },
-        { type: 'issue', trackingMethod: 'issue-link', confidence: 'exact', issueNumber: 10 },
-        { type: 'issue', trackingMethod: 'issue-link', confidence: 'exact', issueNumber: 11 },
+        {
+          type: 'pull_request',
+          trackingMethod: 'api',
+          confidence: 'exact',
+          prNumber: 42,
+        },
+        {
+          type: 'issue',
+          trackingMethod: 'issue-link',
+          confidence: 'exact',
+          issueNumber: 10,
+        },
+        {
+          type: 'issue',
+          trackingMethod: 'issue-link',
+          confidence: 'exact',
+          issueNumber: 11,
+        },
       ],
       edges: [],
     });
 
-    const handler = executeGraphExplore(mockAdapter as never, mockStatusBar as never);
+    const handler = executeGraphExplore(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
     expect(vscode.window.showInformationMessage).toHaveBeenCalledWith(
@@ -65,11 +100,21 @@ describe('executeGraphExplore', () => {
   it('shows no issues message when none found', async () => {
     vi.mocked(vscode.window.showInputBox).mockResolvedValue('42');
     mockAdapter.graph.mockResolvedValue({
-      nodes: [{ type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 42 }],
+      nodes: [
+        {
+          type: 'pull_request',
+          trackingMethod: 'api',
+          confidence: 'exact',
+          prNumber: 42,
+        },
+      ],
       edges: [],
     });
 
-    const handler = executeGraphExplore(mockAdapter as never, mockStatusBar as never);
+    const handler = executeGraphExplore(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
     await handler();
 
     expect(vscode.window.showInformationMessage).toHaveBeenCalledWith(
@@ -82,7 +127,11 @@ describe('executeGraphExplore', () => {
     mockAdapter.graph.mockResolvedValue({ nodes: [], edges: [] });
     const mockPanel = { show: vi.fn(), dispose: vi.fn() };
 
-    const handler = executeGraphExplore(mockAdapter as never, mockStatusBar as never, mockPanel as never);
+    const handler = executeGraphExplore(
+      mockAdapter as never,
+      mockStatusBar as never,
+      mockPanel as never,
+    );
     await handler();
 
     expect(mockPanel.show).toHaveBeenCalled();

@@ -8,10 +8,10 @@
 
 ### Fixed
 
-
 ## [0.1.0] - 2026-03-22
 
 ### Added
+
 - **Trace PR**: Trace any code line back to its origin Pull Request via git blame
 - **Trace PR (Range)**: Trace selected line ranges with range display in detail panel
 - **Explore Graph**: PR-to-Issue graph exploration via platform API

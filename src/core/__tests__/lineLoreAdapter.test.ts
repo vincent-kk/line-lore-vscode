@@ -39,7 +39,12 @@ describe('LineLoreAdapter', () => {
       const mockResult = {
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+        featureFlags: {
+          astDiff: false,
+          deepTrace: false,
+          commitGraph: false,
+          graphql: false,
+        },
         warnings: [],
       };
       mockTrace.mockResolvedValue(mockResult);
@@ -53,6 +58,7 @@ describe('LineLoreAdapter', () => {
         deep: false,
         noAst: false,
         noCache: false,
+        mode: 'change',
       });
       expect(result).toBe(mockResult);
     });
@@ -61,7 +67,12 @@ describe('LineLoreAdapter', () => {
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+        featureFlags: {
+          astDiff: false,
+          deepTrace: false,
+          commitGraph: false,
+          graphql: false,
+        },
         warnings: [],
       });
 
@@ -79,11 +90,18 @@ describe('LineLoreAdapter', () => {
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+        featureFlags: {
+          astDiff: false,
+          deepTrace: false,
+          commitGraph: false,
+          graphql: false,
+        },
         warnings: [],
       });
 
-      await adapter.trace('/workspace/src/auth.ts', 42, undefined, { deep: true });
+      await adapter.trace('/workspace/src/auth.ts', 42, undefined, {
+        deep: true,
+      });
 
       expect(mockTrace).toHaveBeenCalledWith(
         expect.objectContaining({ deep: true }),
@@ -92,17 +110,30 @@ describe('LineLoreAdapter', () => {
 
     it('reads config values for trace options', async () => {
       const mockGet = vi.fn((key: string) => {
-        if (key === 'trace.deep') { return true; }
-        if (key === 'trace.noAst') { return true; }
-        if (key === 'trace.noCache') { return false; }
+        if (key === 'trace.deep') {
+          return true;
+        }
+        if (key === 'trace.noAst') {
+          return true;
+        }
+        if (key === 'trace.noCache') {
+          return false;
+        }
         return undefined;
       });
-      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({ get: mockGet } as never);
+      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+        get: mockGet,
+      } as never);
 
       mockTrace.mockResolvedValue({
         nodes: [],
         operatingLevel: 0 as const,
-        featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+        featureFlags: {
+          astDiff: false,
+          deepTrace: false,
+          commitGraph: false,
+          graphql: false,
+        },
         warnings: [],
       });
 

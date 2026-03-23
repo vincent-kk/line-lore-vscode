@@ -12,5 +12,10 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules", ".vscode-test", "vitest.config.ts", "src/**/__tests__"]
+  "exclude": [
+    "node_modules",
+    ".vscode-test",
+    "vitest.config.ts",
+    "src/**/__tests__"
+  ]
 }

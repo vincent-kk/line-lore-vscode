@@ -24,7 +24,12 @@ describe('formatTraceResult', () => {
         },
       ],
       operatingLevel: 2,
-      featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, graphql: true },
+      featureFlags: {
+        astDiff: true,
+        deepTrace: false,
+        commitGraph: true,
+        graphql: true,
+      },
       warnings: [],
     };
 
@@ -51,7 +56,12 @@ describe('formatTraceResult', () => {
         },
       ],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: ['GitHub CLI not detected'],
     };
 
@@ -67,7 +77,12 @@ describe('formatTraceResult', () => {
     const result: TraceFullResult = {
       nodes: [],
       operatingLevel: 0,
-      featureFlags: { astDiff: false, deepTrace: false, commitGraph: false, graphql: false },
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
       warnings: [],
     };
 
@@ -88,37 +103,49 @@ describe('formatErrorMessage', () => {
 
     it('maps FILE_NOT_FOUND', () => {
       const info = formatErrorMessage(LineLoreErrorCode.FILE_NOT_FOUND);
-      expect(info.message).toBe('File not found. It may have been moved or deleted.');
+      expect(info.message).toBe(
+        'File not found. It may have been moved or deleted.',
+      );
       expect(info.severity).toBe('error');
     });
 
     it('maps INVALID_LINE', () => {
       const info = formatErrorMessage(LineLoreErrorCode.INVALID_LINE);
-      expect(info.message).toBe('Invalid line number. The file may have changed.');
+      expect(info.message).toBe(
+        'Invalid line number. The file may have changed.',
+      );
       expect(info.severity).toBe('error');
     });
 
     it('maps GIT_BLAME_FAILED', () => {
       const info = formatErrorMessage(LineLoreErrorCode.GIT_BLAME_FAILED);
-      expect(info.message).toBe('Git blame failed for this line. The file may be uncommitted.');
+      expect(info.message).toBe(
+        'Git blame failed for this line. The file may be uncommitted.',
+      );
       expect(info.severity).toBe('error');
     });
 
     it('maps CLI_NOT_AUTHENTICATED', () => {
       const info = formatErrorMessage(LineLoreErrorCode.CLI_NOT_AUTHENTICATED);
-      expect(info.message).toBe('GitHub CLI not authenticated. Run `gh auth login` for full access.');
+      expect(info.message).toBe(
+        'GitHub CLI not authenticated. Run `gh auth login` for full access.',
+      );
       expect(info.severity).toBe('warning');
     });
 
     it('maps API_RATE_LIMITED', () => {
       const info = formatErrorMessage(LineLoreErrorCode.API_RATE_LIMITED);
-      expect(info.message).toBe('GitHub API rate limit reached. Try again later.');
+      expect(info.message).toBe(
+        'GitHub API rate limit reached. Try again later.',
+      );
       expect(info.severity).toBe('error');
     });
 
     it('maps API_REQUEST_FAILED', () => {
       const info = formatErrorMessage(LineLoreErrorCode.API_REQUEST_FAILED);
-      expect(info.message).toBe('GitHub API request failed. Check your network connection.');
+      expect(info.message).toBe(
+        'GitHub API request failed. Check your network connection.',
+      );
       expect(info.severity).toBe('error');
     });
   });
@@ -185,7 +212,9 @@ describe('formatErrorMessage', () => {
     for (const code of graphCodes) {
       it(`maps ${code} to Graph traversal category`, () => {
         const info = formatErrorMessage(code);
-        expect(info.message).toContain('Issue graph traversal encountered a problem');
+        expect(info.message).toContain(
+          'Issue graph traversal encountered a problem',
+        );
         expect(info.message).toContain(code);
         expect(info.severity).toBe('warning');
       });

@@ -25,11 +25,29 @@ describe('DetailPanelManager', () => {
 
   const mockResult: TraceFullResult = {
     nodes: [
-      { type: 'original_commit', sha: 'abc1234', trackingMethod: 'blame', confidence: 'exact' },
-      { type: 'pull_request', trackingMethod: 'api', confidence: 'exact', prNumber: 42, prTitle: 'feat: auth', prUrl: 'https://github.com/test/pull/42', mergedAt: '2025-03-15T10:00:00Z' },
+      {
+        type: 'original_commit',
+        sha: 'abc1234',
+        trackingMethod: 'blame',
+        confidence: 'exact',
+      },
+      {
+        type: 'pull_request',
+        trackingMethod: 'api',
+        confidence: 'exact',
+        prNumber: 42,
+        prTitle: 'feat: auth',
+        prUrl: 'https://github.com/test/pull/42',
+        mergedAt: '2025-03-15T10:00:00Z',
+      },
     ],
     operatingLevel: 2,
-    featureFlags: { astDiff: true, deepTrace: false, commitGraph: true, graphql: true },
+    featureFlags: {
+      astDiff: true,
+      deepTrace: false,
+      commitGraph: true,
+      graphql: true,
+    },
     warnings: [],
   };
 
