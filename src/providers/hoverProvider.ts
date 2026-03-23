@@ -32,10 +32,10 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
     };
 
     try {
-      const [normalSettled, strictSettled] = await Promise.race([
+      const [normalSettled, originSettled] = await Promise.race([
         Promise.allSettled([
           this.adapter.traceCached(filePath, line),
-          this.adapter.traceCached(filePath, line, true),
+          this.adapter.traceCached(filePath, line, 'origin'),
         ]),
         new Promise<never>((_, reject) => {
           const listener = token.onCancellationRequested(() => {
@@ -52,17 +52,17 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
         normalSettled.status === 'fulfilled'
           ? formatTraceResult(normalSettled.value)
           : null;
-      const strictDisplay: DisplayResult | null =
-        strictSettled.status === 'fulfilled'
-          ? formatTraceResult(strictSettled.value)
+      const originDisplay: DisplayResult | null =
+        originSettled.status === 'fulfilled'
+          ? formatTraceResult(originSettled.value)
           : null;
 
       const normalFound = display?.found && display?.prUrl;
-      const strictFound = strictDisplay?.found && strictDisplay?.prUrl;
+      const originFound = originDisplay?.found && originDisplay?.prUrl;
 
-      if (normalFound || strictFound) {
+      if (normalFound || originFound) {
         return new vscode.Hover(
-          formatHoverMarkdown(display, filePath, line, strictDisplay),
+          formatHoverMarkdown(display, filePath, line, originDisplay),
         );
       }
     } catch {

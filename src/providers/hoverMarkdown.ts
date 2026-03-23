@@ -5,34 +5,34 @@ export function formatHoverMarkdown(
   display: DisplayResult | null,
   filePath: string,
   line: number,
-  strictDisplay?: DisplayResult | null,
+  originDisplay?: DisplayResult | null,
 ): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
   md.isTrusted = true;
   md.supportThemeIcons = true;
 
   const normalFound = display?.found && display?.prUrl;
-  const strictFound = strictDisplay?.found && strictDisplay?.prUrl;
+  const originFound = originDisplay?.found && originDisplay?.prUrl;
 
-  const primaryDisplay = normalFound ? display : strictFound ? strictDisplay : null;
+  const primaryDisplay = normalFound ? display : originFound ? originDisplay : null;
 
-  if (normalFound && strictFound) {
-    if (display!.prNumber === strictDisplay!.prNumber) {
+  if (normalFound && originFound) {
+    if (display!.prNumber === originDisplay!.prNumber) {
       // Scenario D: both cached, same PR
       appendPrSection(md, display!);
       md.appendMarkdown(`$(check) Origin and modifier match\n\n`);
     } else {
       // Scenario C: both cached, different PRs
-      appendPrSection(md, display!, 'Origin');
+      appendPrSection(md, display!, 'Modifier');
       md.appendMarkdown('---\n\n');
-      appendPrSection(md, strictDisplay!, 'Modifier', '$(pinned)');
+      appendPrSection(md, originDisplay!, 'Origin', '$(git-merge)');
     }
   } else if (normalFound) {
-    // Scenario A: only normal cached
+    // Scenario A: only default (change) cached
     appendPrSection(md, display!);
-  } else if (strictFound) {
-    // Scenario B: only strict cached
-    appendPrSection(md, strictDisplay!, 'Modifier', '$(pinned)');
+  } else if (originFound) {
+    // Scenario B: only origin cached
+    appendPrSection(md, originDisplay!, 'Origin', '$(git-merge)');
   }
 
   md.appendMarkdown('---\n\n');
@@ -85,6 +85,6 @@ function appendTraceButtons(
   );
   md.appendMarkdown('&ensp;');
   md.appendMarkdown(
-    `$(pinned) [Strict](command:lineLore.traceStrictFromHover?${retraceArgs})`,
+    `$(git-merge) [Origin](command:lineLore.traceOriginFromHover?${retraceArgs})`,
   );
 }

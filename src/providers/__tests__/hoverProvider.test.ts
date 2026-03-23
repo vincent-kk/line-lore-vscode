@@ -91,7 +91,7 @@ describe('LineLoreHoverProvider', () => {
     expect(mockTraceCached).not.toHaveBeenCalled();
   });
 
-  it('calls traceCached twice (normal + strict) via Promise.allSettled', async () => {
+  it('calls traceCached twice (normal + origin) via Promise.allSettled', async () => {
     const positionAtEnd = { line: 41, character: 16 } as never;
     mockTraceCached.mockResolvedValue({
       nodes: [],
@@ -120,15 +120,15 @@ describe('LineLoreHoverProvider', () => {
     expect(mockTraceCached).toHaveBeenCalledWith(
       '/workspace/src/auth.ts',
       42,
-      true,
+      'origin',
     );
   });
 
   it('returns rich hover when normal cache hits with PR', async () => {
     const positionAtEnd = { line: 41, character: 16 } as never;
     mockTraceCached.mockImplementation(
-      (_filePath: string, _line: number, strict?: boolean) => {
-        if (strict) {
+      (_filePath: string, _line: number, mode?: string) => {
+        if (mode === 'origin') {
           return Promise.resolve({
             nodes: [],
             operatingLevel: 0,
@@ -180,11 +180,11 @@ describe('LineLoreHoverProvider', () => {
     expect(formatHoverMarkdown).toHaveBeenCalled();
   });
 
-  it('returns rich hover when only strict cache hits', async () => {
+  it('returns rich hover when only origin-mode cache hits', async () => {
     const positionAtEnd = { line: 41, character: 16 } as never;
     mockTraceCached.mockImplementation(
-      (_filePath: string, _line: number, strict?: boolean) => {
-        if (strict) {
+      (_filePath: string, _line: number, mode?: string) => {
+        if (mode === 'origin') {
           return Promise.resolve({
             nodes: [
               {
@@ -234,10 +234,10 @@ describe('LineLoreHoverProvider', () => {
 
     expect(result).toBeDefined();
     expect(formatHoverMarkdown).toHaveBeenCalled();
-    const [display, , , strictDisplay] = vi.mocked(formatHoverMarkdown).mock
+    const [display, , , originDisplay] = vi.mocked(formatHoverMarkdown).mock
       .calls[0];
     expect((display as { found: boolean }).found).toBe(false);
-    expect((strictDisplay as { found: boolean }).found).toBe(true);
+    expect((originDisplay as { found: boolean }).found).toBe(true);
   });
 
   it('returns static fallback when neither variant finds a PR', async () => {

@@ -8,7 +8,7 @@ import { formatTraceResult } from '../core/index.js';
 import { showTraceResult, handleTraceError } from './traceHelpers.js';
 
 type TraceOverrides = Partial<
-  Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'strict'>
+  Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'mode'>
 >;
 
 export function executeTraceFromHover(
@@ -18,7 +18,7 @@ export function executeTraceFromHover(
   overrides?: TraceOverrides,
   noFoundLabel = 'No PR found for this line.',
 ): (filePath: string, line: number) => Promise<void> {
-  const strict = !!overrides?.strict;
+  const isOriginMode = overrides?.mode === 'origin';
   return async (filePath: string, line: number) => {
     statusBar.showLoading();
     try {
@@ -34,7 +34,7 @@ export function executeTraceFromHover(
         noFoundLabel,
         detailPanel,
         undefined,
-        strict,
+        isOriginMode,
       );
     } catch (error) {
       handleTraceError(error, statusBar);
@@ -42,7 +42,7 @@ export function executeTraceFromHover(
   };
 }
 
-export const executeTraceStrictFromHover = (
+export const executeTraceOriginFromHover = (
   adapter: LineLoreAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
@@ -51,6 +51,6 @@ export const executeTraceStrictFromHover = (
     adapter,
     statusBar,
     detailPanel,
-    { strict: true },
-    'No PR found (strict mode — no rename/move detection).',
+    { mode: 'origin' as const },
+    'No PR found (origin mode — follows rename/move history).',
   );

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { trace, graph, health, clearCache } from '@lumy-pack/line-lore';
 import type {
+  TraceMode,
   TraceOptions,
   TraceFullResult,
   GraphOptions,
@@ -15,7 +16,7 @@ export class LineLoreAdapter {
     line: number,
     endLine?: number,
     overrides?: Partial<
-      Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'strict'>
+      Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'mode'>
     >,
   ): Promise<TraceFullResult> {
     const config = vscode.workspace.getConfiguration('lineLore');
@@ -30,7 +31,7 @@ export class LineLoreAdapter {
       noAst: overrides?.noAst ?? config.get<boolean>('trace.noAst', false),
       noCache:
         overrides?.noCache ?? config.get<boolean>('trace.noCache', false),
-      ...(overrides?.strict && { strict: true }),
+      mode: overrides?.mode ?? 'change',
     };
     return trace(options);
   }
@@ -48,7 +49,7 @@ export class LineLoreAdapter {
   async traceCached(
     filePath: string,
     line: number,
-    strict?: boolean,
+    mode?: TraceMode,
   ): Promise<TraceFullResult> {
     const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))
       ?.uri.fsPath;
@@ -57,7 +58,7 @@ export class LineLoreAdapter {
       line,
       ...(cwd !== undefined && { cwd }),
       cacheOnly: true,
-      ...(strict && { strict: true }),
+      mode: mode ?? 'change',
     });
   }
 

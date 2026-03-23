@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@lumy-pack/line-lore':
-        specifier: /Users/Vincent/Workspace/lumy-pack/packages/line-lore/package.tgz
-        version: file:../lumy-pack/packages/line-lore/package.tgz
+        specifier: 0.0.8
+        version: 0.0.8
     devDependencies:
       '@eslint/js':
         specifier: ^9.13.0
@@ -486,9 +486,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@lumy-pack/line-lore@file:../lumy-pack/packages/line-lore/package.tgz':
-    resolution: {integrity: sha512-Ida2DBR+hNn5fDcnKi60+NKYBCNsCaWk2otogZpiMgRq4D9uHlniwiKvCDwpL4ws73qfok5LKSdMId3dw5gAwA==, tarball: file:../lumy-pack/packages/line-lore/package.tgz}
-    version: 0.0.7
+  '@lumy-pack/line-lore@0.0.8':
+    resolution: {integrity: sha512-LfbpWsjqISvvNNSMb0EChzLllDUVXtgnL3G+EgoqveOkw7s0fUAvUQBtjj+IFbdQFiJ1qWRI8NVaPpD47zx4uQ==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -3148,7 +3147,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@lumy-pack/line-lore@file:../lumy-pack/packages/line-lore/package.tgz':
+  '@lumy-pack/line-lore@0.0.8':
     dependencies:
       '@winglet/common-utils': 0.11.2
       commander: 12.1.0

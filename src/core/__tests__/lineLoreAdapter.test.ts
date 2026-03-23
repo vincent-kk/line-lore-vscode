@@ -58,6 +58,7 @@ describe('LineLoreAdapter', () => {
         deep: false,
         noAst: false,
         noCache: false,
+        mode: 'change',
       });
       expect(result).toBe(mockResult);
     });

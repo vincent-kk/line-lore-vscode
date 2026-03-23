@@ -78,27 +78,27 @@ describe('formatHoverMarkdown', () => {
     expect(value).toContain(`command:lineLore.traceFromHover?${expectedArgs}`);
   });
 
-  it('includes Strict trace button with traceStrictFromHover command', () => {
+  it('includes Origin trace button with traceOriginFromHover command', () => {
     const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
     const value = (md as unknown as { value: string }).value;
 
     const expectedArgs = encodeURIComponent(
       JSON.stringify(['/src/auth.ts', 10]),
     );
-    expect(value).toContain('$(pinned)');
+    expect(value).toContain('$(git-merge)');
     expect(value).toContain(
-      `command:lineLore.traceStrictFromHover?${expectedArgs}`,
+      `command:lineLore.traceOriginFromHover?${expectedArgs}`,
     );
   });
 
-  describe('Scenario B: strict-only cached', () => {
-    it('shows $(pinned) icon and (Modifier) label', () => {
+  describe('Scenario B: origin-only cached', () => {
+    it('shows $(git-merge) icon and (Origin) label', () => {
       const notFound: DisplayResult = {
         found: false,
         operatingLevel: 0 as const,
         warnings: [],
       };
-      const strictOnly: DisplayResult = {
+      const originOnly: DisplayResult = {
         found: true,
         prNumber: 99,
         prTitle: 'Refactor auth flow',
@@ -106,16 +106,16 @@ describe('formatHoverMarkdown', () => {
         operatingLevel: 2 as const,
         warnings: [],
       };
-      const md = formatHoverMarkdown(notFound, '/src/auth.ts', 10, strictOnly);
+      const md = formatHoverMarkdown(notFound, '/src/auth.ts', 10, originOnly);
       const value = (md as unknown as { value: string }).value;
 
-      expect(value).toContain('$(pinned)');
-      expect(value).toContain('(Modifier)');
+      expect(value).toContain('$(git-merge)');
+      expect(value).toContain('(Origin)');
       expect(value).toContain('PR #99');
       expect(value).toContain(
         '[Refactor auth flow](https://github.com/org/repo/pull/99)',
       );
-      // Copy Link should use strict prUrl
+      // Copy Link should use origin-mode prUrl
       const copyArgs = encodeURIComponent(
         JSON.stringify(['https://github.com/org/repo/pull/99']),
       );

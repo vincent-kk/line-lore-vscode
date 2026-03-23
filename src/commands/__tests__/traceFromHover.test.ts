@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   executeTraceFromHover,
-  executeTraceStrictFromHover,
+  executeTraceOriginFromHover,
 } from '../traceFromHover.js';
 import { LineLoreError } from '@lumy-pack/line-lore';
 
@@ -213,7 +213,7 @@ describe('executeTraceFromHover', () => {
   });
 });
 
-describe('executeTraceStrictFromHover', () => {
+describe('executeTraceOriginFromHover', () => {
   const mockAdapter = {
     trace: vi.fn(),
   };
@@ -228,7 +228,7 @@ describe('executeTraceStrictFromHover', () => {
     vi.clearAllMocks();
   });
 
-  it('calls adapter.trace with { strict: true } override', async () => {
+  it('calls adapter.trace with { mode: "change" } override', async () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [
         {
@@ -250,7 +250,7 @@ describe('executeTraceStrictFromHover', () => {
       warnings: [],
     });
 
-    const handler = executeTraceStrictFromHover(
+    const handler = executeTraceOriginFromHover(
       mockAdapter as never,
       mockStatusBar as never,
     );
@@ -260,11 +260,11 @@ describe('executeTraceStrictFromHover', () => {
       '/workspace/src/auth.ts',
       42,
       undefined,
-      { strict: true },
+      { mode: 'origin' },
     );
   });
 
-  it('shows strict-specific warning when no PR found', async () => {
+  it('shows origin-mode-specific warning when no PR found', async () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [
         {
@@ -284,18 +284,18 @@ describe('executeTraceStrictFromHover', () => {
       warnings: [],
     });
 
-    const handler = executeTraceStrictFromHover(
+    const handler = executeTraceOriginFromHover(
       mockAdapter as never,
       mockStatusBar as never,
     );
     await handler('/workspace/src/auth.ts', 42);
 
     expect(vscode.window.showWarningMessage).toHaveBeenCalledWith(
-      'No PR found (strict mode — no rename/move detection). Commit: abc123',
+      'No PR found (origin mode — follows rename/move history). Commit: abc123',
     );
   });
 
-  it('shows [Strict] prefix in info message when PR found', async () => {
+  it('shows [Origin] prefix in info message when PR found', async () => {
     mockAdapter.trace.mockResolvedValue({
       nodes: [
         {
@@ -317,14 +317,14 @@ describe('executeTraceStrictFromHover', () => {
       warnings: [],
     });
 
-    const handler = executeTraceStrictFromHover(
+    const handler = executeTraceOriginFromHover(
       mockAdapter as never,
       mockStatusBar as never,
     );
     await handler('/workspace/src/auth.ts', 42);
 
     expect(vscode.window.showInformationMessage).toHaveBeenCalledWith(
-      '[Strict] PR #99: refactor: auth flow',
+      '[Origin] PR #99: refactor: auth flow',
       'Open PR',
       'Copy Link',
     );

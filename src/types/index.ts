@@ -7,6 +7,7 @@ import type {
 export type {
   TraceNode,
   TraceNodeType,
+  TraceMode,
   TraceOptions,
   TraceFullResult,
   OperatingLevel,

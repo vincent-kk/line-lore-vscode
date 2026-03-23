@@ -13,15 +13,15 @@ export async function showTraceResult(
   noFoundLabel: string,
   detailPanel?: DetailPanelManager,
   endLine?: number,
-  strict?: boolean,
+  isOriginMode?: boolean,
 ): Promise<void> {
   if (display.found && display.prUrl) {
     const buttons = detailPanel
       ? ['Open PR', 'Copy Link', 'Show Details']
       : ['Open PR', 'Copy Link'];
 
-    const label = strict
-      ? `[Strict] PR #${display.prNumber}: ${display.prTitle}`
+    const label = isOriginMode
+      ? `[Origin] PR #${display.prNumber}: ${display.prTitle}`
       : `PR #${display.prNumber}: ${display.prTitle}`;
 
     const action = await vscode.window.showInformationMessage(

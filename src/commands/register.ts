@@ -11,7 +11,7 @@ import { executeClearCache } from './clearCache.js';
 import { executeGraphExplore } from './graphExplore.js';
 import {
   executeTraceFromHover,
-  executeTraceStrictFromHover,
+  executeTraceOriginFromHover,
 } from './traceFromHover.js';
 import { handleTraceError } from './traceHelpers.js';
 
@@ -47,8 +47,8 @@ export function registerCommands(
       executeTraceFromHover(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand(
-      'lineLore.traceStrictFromHover',
-      executeTraceStrictFromHover(adapter, statusBar, detailPanel),
+      'lineLore.traceOriginFromHover',
+      executeTraceOriginFromHover(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand('lineLore.copyPrLink', (prUrl: string) => {
       void vscode.env.clipboard.writeText(prUrl);
