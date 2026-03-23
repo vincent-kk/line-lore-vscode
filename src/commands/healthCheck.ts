@@ -9,9 +9,10 @@ export function executeHealthCheck(
     try {
       const report = await adapter.health(cwd);
       const level = report.operatingLevel;
-      const hints = report.hints.length > 0
-        ? `\n\nHints:\n${report.hints.map(h => `• ${h}`).join('\n')}`
-        : '';
+      const hints =
+        report.hints.length > 0
+          ? `\n\nHints:\n${report.hints.map((h) => `• ${h}`).join('\n')}`
+          : '';
 
       if (level === 2) {
         void vscode.window.showInformationMessage(

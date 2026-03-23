@@ -7,7 +7,10 @@ vi.mock('vscode', () => {
     this.value = '';
     this.isTrusted = false;
     this.supportThemeIcons = false;
-    this.appendMarkdown = vi.fn(function (this: Record<string, unknown>, val: string) {
+    this.appendMarkdown = vi.fn(function (
+      this: Record<string, unknown>,
+      val: string,
+    ) {
       this.value = (this.value as string) + val;
     });
   });
@@ -40,14 +43,18 @@ describe('formatHoverMarkdown', () => {
     const value = (md as unknown as { value: string }).value;
 
     expect(value).toContain('PR #42');
-    expect(value).toContain('[Fix auth bug](https://github.com/org/repo/pull/42)');
+    expect(value).toContain(
+      '[Fix auth bug](https://github.com/org/repo/pull/42)',
+    );
   });
 
   it('includes Copy Link command URI with encoded prUrl', () => {
     const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
     const value = (md as unknown as { value: string }).value;
 
-    const expectedArgs = encodeURIComponent(JSON.stringify(['https://github.com/org/repo/pull/42']));
+    const expectedArgs = encodeURIComponent(
+      JSON.stringify(['https://github.com/org/repo/pull/42']),
+    );
     expect(value).toContain(`command:lineLore.copyPrLink?${expectedArgs}`);
   });
 
@@ -55,7 +62,9 @@ describe('formatHoverMarkdown', () => {
     const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
     const value = (md as unknown as { value: string }).value;
 
-    const expectedArgs = encodeURIComponent(JSON.stringify(['/src/auth.ts', 10]));
+    const expectedArgs = encodeURIComponent(
+      JSON.stringify(['/src/auth.ts', 10]),
+    );
     expect(value).toContain(`command:lineLore.showDetails?${expectedArgs}`);
   });
 
@@ -63,7 +72,9 @@ describe('formatHoverMarkdown', () => {
     const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
     const value = (md as unknown as { value: string }).value;
 
-    const expectedArgs = encodeURIComponent(JSON.stringify(['/src/auth.ts', 10]));
+    const expectedArgs = encodeURIComponent(
+      JSON.stringify(['/src/auth.ts', 10]),
+    );
     expect(value).toContain(`command:lineLore.traceFromHover?${expectedArgs}`);
   });
 });

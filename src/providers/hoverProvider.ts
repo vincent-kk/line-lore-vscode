@@ -4,9 +4,7 @@ import { formatTraceResult } from '../core/index.js';
 import { formatHoverMarkdown } from './hoverMarkdown.js';
 
 export class LineLoreHoverProvider implements vscode.HoverProvider {
-  constructor(
-    private adapter: LineLoreAdapter,
-  ) {}
+  constructor(private adapter: LineLoreAdapter) {}
 
   async provideHover(
     document: vscode.TextDocument,
@@ -18,9 +16,19 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
       return undefined;
     }
 
+    const lineText = document.lineAt(position.line).text;
+    if (position.character < lineText.trimEnd().length) {
+      return undefined;
+    }
+
     const filePath = document.uri.fsPath;
     const line = position.line + 1;
-    const cancelDisposable = { disposed: false, dispose() { this.disposed = true; } };
+    const cancelDisposable = {
+      disposed: false,
+      dispose() {
+        this.disposed = true;
+      },
+    };
 
     try {
       const result = await Promise.race([

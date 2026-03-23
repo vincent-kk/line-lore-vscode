@@ -6,7 +6,12 @@ export class DetailPanelManager {
 
   constructor(private readonly extensionUri: vscode.Uri) {}
 
-  show(filePath: string, line: number, result: TraceFullResult, endLine?: number): void {
+  show(
+    filePath: string,
+    line: number,
+    result: TraceFullResult,
+    endLine?: number,
+  ): void {
     if (this.panel) {
       this.panel.reveal(vscode.ViewColumn.Beside);
     } else {
@@ -16,7 +21,9 @@ export class DetailPanelManager {
         vscode.ViewColumn.Beside,
         { enableScripts: false },
       );
-      this.panel.onDidDispose(() => { this.panel = undefined; });
+      this.panel.onDidDispose(() => {
+        this.panel = undefined;
+      });
     }
 
     this.panel.webview.html = this.buildHtml(filePath, line, result, endLine);
@@ -27,35 +34,41 @@ export class DetailPanelManager {
     this.panel = undefined;
   }
 
-  private buildHtml(filePath: string, line: number, result: TraceFullResult, endLine?: number): string {
+  private buildHtml(
+    filePath: string,
+    line: number,
+    result: TraceFullResult,
+    endLine?: number,
+  ): string {
     const fileName = filePath.split('/').pop() ?? filePath;
     const lineLabel = endLine ? `L${line}-L${endLine}` : `L${line}`;
-    const nodesHtml = result.nodes.map(node => {
-      const icon = this.getNodeIcon(node.type);
-      const confidence = node.confidence ? ` [${node.confidence}]` : '';
-      const method = node.trackingMethod ? `via ${node.trackingMethod}` : '';
+    const nodesHtml = result.nodes
+      .map((node) => {
+        const icon = this.getNodeIcon(node.type);
+        const confidence = node.confidence ? ` [${node.confidence}]` : '';
+        const method = node.trackingMethod ? `via ${node.trackingMethod}` : '';
 
-      let detail = '';
-      if (node.type === 'pull_request') {
-        const prLink = node.prUrl
-          ? `<a href="${this.escapeHtml(node.prUrl)}">${this.escapeHtml(node.prUrl)}</a>`
-          : '';
-        detail = `
+        let detail = '';
+        if (node.type === 'pull_request') {
+          const prLink = node.prUrl
+            ? `<a href="${this.escapeHtml(node.prUrl)}">${this.escapeHtml(node.prUrl)}</a>`
+            : '';
+          detail = `
           <div class="node-detail">
             ${node.prTitle ? `<div class="pr-title">${this.escapeHtml(node.prTitle)}</div>` : ''}
             ${node.mergedAt ? `<div>Merged: ${this.escapeHtml(node.mergedAt)}</div>` : ''}
             ${prLink ? `<div>URL: ${prLink}</div>` : ''}
           </div>`;
-      } else if (node.type === 'issue') {
-        detail = `
+        } else if (node.type === 'issue') {
+          detail = `
           <div class="node-detail">
             ${node.issueTitle ? `<div>${this.escapeHtml(node.issueTitle)}</div>` : ''}
             ${node.issueState ? `<div>State: ${node.issueState}</div>` : ''}
             ${node.issueUrl ? `<div>URL: <a href="${this.escapeHtml(node.issueUrl)}">${this.escapeHtml(node.issueUrl)}</a></div>` : ''}
           </div>`;
-      }
+        }
 
-      return `
+        return `
         <div class="node">
           <div class="node-header">
             <span class="node-icon">${icon}</span>
@@ -68,15 +81,22 @@ export class DetailPanelManager {
           ${node.note ? `<div class="node-note">${this.escapeHtml(node.note)}</div>` : ''}
           ${detail}
         </div>`;
-    }).join('\n');
+      })
+      .join('\n');
 
-    const warningsHtml = result.warnings.length > 0
-      ? result.warnings.map(w => `<div class="warning-item">${this.escapeHtml(w)}</div>`).join('\n')
-      : '<div class="no-warnings">(none)</div>';
+    const warningsHtml =
+      result.warnings.length > 0
+        ? result.warnings
+            .map((w) => `<div class="warning-item">${this.escapeHtml(w)}</div>`)
+            .join('\n')
+        : '<div class="no-warnings">(none)</div>';
 
-    const levelLabel = result.operatingLevel === 2 ? 'Full API Access'
-      : result.operatingLevel === 1 ? 'Limited Mode'
-      : 'Git Only';
+    const levelLabel =
+      result.operatingLevel === 2
+        ? 'Full API Access'
+        : result.operatingLevel === 1
+          ? 'Limited Mode'
+          : 'Git Only';
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -136,18 +156,25 @@ export class DetailPanelManager {
 
   private getNodeIcon(type: string): string {
     switch (type) {
-      case 'original_commit': return '●';
-      case 'cosmetic_commit': return '○';
-      case 'merge_commit': return '◆';
-      case 'rebased_commit': return '◇';
-      case 'pull_request': return '▸';
-      case 'issue': return '▹';
-      default: return '•';
+      case 'original_commit':
+        return '●';
+      case 'cosmetic_commit':
+        return '○';
+      case 'merge_commit':
+        return '◆';
+      case 'rebased_commit':
+        return '◇';
+      case 'pull_request':
+        return '▸';
+      case 'issue':
+        return '▹';
+      default:
+        return '•';
     }
   }
 
   private formatNodeType(type: string): string {
-    return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }
 
   private escapeHtml(text: string): string {

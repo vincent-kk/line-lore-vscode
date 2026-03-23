@@ -5,7 +5,9 @@ import { registerCommands } from './commands/index.js';
 import { registerProviders } from './providers/index.js';
 import { StatusBarController, DetailPanelManager } from './views/index.js';
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
+export async function activate(
+  context: vscode.ExtensionContext,
+): Promise<void> {
   const folders = vscode.workspace.workspaceFolders;
   if (!folders) {
     return;
@@ -23,7 +25,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     return;
   }
 
-  void vscode.commands.executeCommand('setContext', 'lineLore.gitDetected', true);
+  void vscode.commands.executeCommand(
+    'setContext',
+    'lineLore.gitDetected',
+    true,
+  );
 
   const adapter = new LineLoreAdapter();
   const statusBar = new StatusBarController();

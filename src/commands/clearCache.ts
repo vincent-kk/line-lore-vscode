@@ -10,7 +10,9 @@ export function executeClearCache(
       { modal: true },
       'Clear Cache',
     );
-    if (confirm !== 'Clear Cache') { return; }
+    if (confirm !== 'Clear Cache') {
+      return;
+    }
 
     try {
       await adapter.clearCache();

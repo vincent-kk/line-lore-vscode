@@ -9,7 +9,9 @@ vi.mock('vscode', () => ({
   workspace: {
     getConfiguration: vi.fn(() => ({
       get: vi.fn((_key: string, defaultValue: unknown) => {
-        if (_key === 'hoverProvider.enabled') { return hoverEnabled; }
+        if (_key === 'hoverProvider.enabled') {
+          return hoverEnabled;
+        }
         return defaultValue;
       }),
     })),
@@ -43,7 +45,10 @@ describe('ProviderManager', () => {
     const manager = new ProviderManager(mockAdapter);
     manager.register(mockContext as never);
 
-    expect(vscode.languages.registerHoverProvider).toHaveBeenCalledWith('*', expect.anything());
+    expect(vscode.languages.registerHoverProvider).toHaveBeenCalledWith(
+      '*',
+      expect.anything(),
+    );
   });
 
   it('does not register hover provider when disabled', () => {
@@ -59,7 +64,10 @@ describe('ProviderManager', () => {
     manager.register(mockContext as never);
 
     hoverEnabled = false;
-    configChangeCallback?.({ affectsConfiguration: (s: string) => s === 'lineLore.hoverProvider.enabled' });
+    configChangeCallback?.({
+      affectsConfiguration: (s: string) =>
+        s === 'lineLore.hoverProvider.enabled',
+    });
 
     expect(mockHoverDisposable.dispose).toHaveBeenCalled();
   });
@@ -71,7 +79,10 @@ describe('ProviderManager', () => {
     vi.clearAllMocks();
 
     hoverEnabled = true;
-    configChangeCallback?.({ affectsConfiguration: (s: string) => s === 'lineLore.hoverProvider.enabled' });
+    configChangeCallback?.({
+      affectsConfiguration: (s: string) =>
+        s === 'lineLore.hoverProvider.enabled',
+    });
 
     expect(vscode.languages.registerHoverProvider).toHaveBeenCalled();
   });

@@ -8,17 +8,23 @@ vi.mock('vscode', () => ({
     fs: { stat: (...args: unknown[]) => mockStat(...args) },
   },
   Uri: {
-    joinPath: vi.fn((_base: unknown, segment: string) => ({ path: `/workspace/${segment}` })),
+    joinPath: vi.fn((_base: unknown, segment: string) => ({
+      path: `/workspace/${segment}`,
+    })),
   },
 }));
 
 describe('detectGitRepo', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('returns true when .git exists', async () => {
     mockStat.mockResolvedValue({});
 
-    const result = await detectGitRepo({ uri: { fsPath: '/workspace' } } as never);
+    const result = await detectGitRepo({
+      uri: { fsPath: '/workspace' },
+    } as never);
 
     expect(result).toBe(true);
   });
@@ -26,7 +32,9 @@ describe('detectGitRepo', () => {
   it('returns false when .git does not exist', async () => {
     mockStat.mockRejectedValue(new Error('not found'));
 
-    const result = await detectGitRepo({ uri: { fsPath: '/workspace' } } as never);
+    const result = await detectGitRepo({
+      uri: { fsPath: '/workspace' },
+    } as never);
 
     expect(result).toBe(false);
   });

@@ -15,9 +15,16 @@ vi.mock('vscode', () => ({
 import * as vscode from 'vscode';
 
 describe('executeHealthCheck', () => {
-  const mockAdapter = { trace: vi.fn(), graph: vi.fn(), health: vi.fn(), clearCache: vi.fn() };
+  const mockAdapter = {
+    trace: vi.fn(),
+    graph: vi.fn(),
+    health: vi.fn(),
+    clearCache: vi.fn(),
+  };
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('shows Level 2 info with git version', async () => {
     mockAdapter.health.mockResolvedValue({
@@ -82,6 +89,8 @@ describe('executeHealthCheck', () => {
     const handler = executeHealthCheck(mockAdapter as never);
     await handler();
 
-    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith('Line Lore: Health check failed.');
+    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
+      'Line Lore: Health check failed.',
+    );
   });
 });

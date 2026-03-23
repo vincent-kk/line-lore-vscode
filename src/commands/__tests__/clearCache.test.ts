@@ -12,12 +12,21 @@ vi.mock('vscode', () => ({
 import * as vscode from 'vscode';
 
 describe('executeClearCache', () => {
-  const mockAdapter = { trace: vi.fn(), graph: vi.fn(), health: vi.fn(), clearCache: vi.fn() };
+  const mockAdapter = {
+    trace: vi.fn(),
+    graph: vi.fn(),
+    health: vi.fn(),
+    clearCache: vi.fn(),
+  };
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('clears cache after confirmation', async () => {
-    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue('Clear Cache' as never);
+    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue(
+      'Clear Cache' as never,
+    );
     mockAdapter.clearCache.mockResolvedValue(undefined);
 
     const handler = executeClearCache(mockAdapter as never);
@@ -35,7 +44,9 @@ describe('executeClearCache', () => {
   });
 
   it('does nothing when user cancels confirmation', async () => {
-    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue(undefined as never);
+    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue(
+      undefined as never,
+    );
 
     const handler = executeClearCache(mockAdapter as never);
     await handler();
@@ -44,12 +55,16 @@ describe('executeClearCache', () => {
   });
 
   it('shows error when clearCache fails', async () => {
-    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue('Clear Cache' as never);
+    vi.mocked(vscode.window.showWarningMessage).mockResolvedValue(
+      'Clear Cache' as never,
+    );
     mockAdapter.clearCache.mockRejectedValue(new Error('fail'));
 
     const handler = executeClearCache(mockAdapter as never);
     await handler();
 
-    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith('Line Lore: Failed to clear cache.');
+    expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
+      'Line Lore: Failed to clear cache.',
+    );
   });
 });

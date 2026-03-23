@@ -16,7 +16,12 @@ export class DecorationController {
     });
   }
 
-  showDecoration(editor: vscode.TextEditor, line: number, prNumber: number): void {
+  showDecoration(
+    editor: vscode.TextEditor,
+    line: number,
+    prNumber: number,
+    hoverMessage?: vscode.MarkdownString,
+  ): void {
     const config = vscode.workspace.getConfiguration('lineLore');
     if (!config.get<boolean>('inlineDecoration.enabled', true)) {
       return;
@@ -26,25 +31,29 @@ export class DecorationController {
     this.activeEditor = editor;
 
     const range = new vscode.Range(line - 1, 0, line - 1, 0);
-    editor.setDecorations(this.decorationType, [
-      {
-        range,
-        renderOptions: {
-          after: { contentText: `← PR #${prNumber}` },
-        },
+    const decorationOptions: vscode.DecorationOptions = {
+      range,
+      renderOptions: {
+        after: { contentText: `← PR #${prNumber}` },
       },
-    ]);
+    };
+    if (hoverMessage) {
+      decorationOptions.hoverMessage = hoverMessage;
+    }
+    editor.setDecorations(this.decorationType, [decorationOptions]);
 
     const timeoutSec = config.get<number>('inlineDecoration.timeout', 30);
     if (timeoutSec > 0) {
       this.removeTimer = setTimeout(() => this.clear(), timeoutSec * 1000);
     }
 
-    this.selectionListener = vscode.window.onDidChangeTextEditorSelection(e => {
-      if (e.textEditor === editor) {
-        this.clear();
-      }
-    });
+    this.selectionListener = vscode.window.onDidChangeTextEditorSelection(
+      (e) => {
+        if (e.textEditor === editor) {
+          this.clear();
+        }
+      },
+    );
   }
 
   clear(): void {

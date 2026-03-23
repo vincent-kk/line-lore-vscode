@@ -1,6 +1,8 @@
-import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
-import type { StatusBarController, DetailPanelManager } from '../views/index.js';
+import type {
+  StatusBarController,
+  DetailPanelManager,
+} from '../views/index.js';
 import { formatTraceResult } from '../core/index.js';
 import { showTraceResult, handleTraceError } from './traceHelpers.js';
 
@@ -16,9 +18,14 @@ export function executeTraceFromHover(
       const display = formatTraceResult(result);
       statusBar.showResult(result.operatingLevel);
 
-      await showTraceResult(display, result, filePath, line, 'No PR found for this line.', detailPanel);
-
-      void vscode.commands.executeCommand('editor.action.showHover').then(undefined, () => {});
+      await showTraceResult(
+        display,
+        result,
+        filePath,
+        line,
+        'No PR found for this line.',
+        detailPanel,
+      );
     } catch (error) {
       handleTraceError(error, statusBar);
     }
