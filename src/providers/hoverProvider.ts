@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { LineLoreAdapter } from '../core/index.js';
+import type { DisplayResult } from '../types/index.js';
 import { formatTraceResult } from '../core/index.js';
 import { formatHoverMarkdown } from './hoverMarkdown.js';
 
@@ -31,8 +32,11 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
     };
 
     try {
-      const result = await Promise.race([
-        this.adapter.traceCached(filePath, line),
+      const [normalSettled, strictSettled] = await Promise.race([
+        Promise.allSettled([
+          this.adapter.traceCached(filePath, line),
+          this.adapter.traceCached(filePath, line, true),
+        ]),
         new Promise<never>((_, reject) => {
           const listener = token.onCancellationRequested(() => {
             reject(new Error('cancelled'));
@@ -44,9 +48,22 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
         }),
       ]);
 
-      const display = formatTraceResult(result);
-      if (display.found && display.prUrl) {
-        return new vscode.Hover(formatHoverMarkdown(display, filePath, line));
+      const display: DisplayResult | null =
+        normalSettled.status === 'fulfilled'
+          ? formatTraceResult(normalSettled.value)
+          : null;
+      const strictDisplay: DisplayResult | null =
+        strictSettled.status === 'fulfilled'
+          ? formatTraceResult(strictSettled.value)
+          : null;
+
+      const normalFound = display?.found && display?.prUrl;
+      const strictFound = strictDisplay?.found && strictDisplay?.prUrl;
+
+      if (normalFound || strictFound) {
+        return new vscode.Hover(
+          formatHoverMarkdown(display, filePath, line, strictDisplay),
+        );
       }
     } catch {
       // Cache failure or cancellation — fall through to static fallback

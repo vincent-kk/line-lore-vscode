@@ -25,4 +25,4 @@ Implements decoration-based hover and inline PR annotations.
 - Make network or git calls during hover; local cache-only reads are permitted
 - Import from commands/ directly; use command IDs as strings
 - Register providers that ignore user configuration
-- Use HoverProvider (removed in favor of decoration-based hover)
+- Perform API or network calls during hover (git blame is local and permitted)

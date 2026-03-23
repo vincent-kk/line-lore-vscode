@@ -2,19 +2,67 @@ import * as vscode from 'vscode';
 import type { DisplayResult } from '../types/index.js';
 
 export function formatHoverMarkdown(
-  display: DisplayResult,
+  display: DisplayResult | null,
   filePath: string,
   line: number,
+  strictDisplay?: DisplayResult | null,
 ): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
   md.isTrusted = true;
   md.supportThemeIcons = true;
 
-  md.appendMarkdown(`$(git-pull-request) **PR #${display.prNumber}**\n\n`);
-  md.appendMarkdown(`[${display.prTitle}](${display.prUrl})\n\n`);
-  md.appendMarkdown('---\n\n');
+  const normalFound = display?.found && display?.prUrl;
+  const strictFound = strictDisplay?.found && strictDisplay?.prUrl;
 
-  const copyArgs = encodeURIComponent(JSON.stringify([display.prUrl]));
+  const primaryDisplay = normalFound ? display : strictFound ? strictDisplay : null;
+
+  if (normalFound && strictFound) {
+    if (display!.prNumber === strictDisplay!.prNumber) {
+      // Scenario D: both cached, same PR
+      appendPrSection(md, display!);
+      md.appendMarkdown(`$(check) Origin and modifier match\n\n`);
+    } else {
+      // Scenario C: both cached, different PRs
+      appendPrSection(md, display!, 'Origin');
+      md.appendMarkdown('---\n\n');
+      appendPrSection(md, strictDisplay!, 'Modifier', '$(pinned)');
+    }
+  } else if (normalFound) {
+    // Scenario A: only normal cached
+    appendPrSection(md, display!);
+  } else if (strictFound) {
+    // Scenario B: only strict cached
+    appendPrSection(md, strictDisplay!, 'Modifier', '$(pinned)');
+  }
+
+  md.appendMarkdown('---\n\n');
+  appendActionButtons(md, primaryDisplay!, filePath, line);
+  md.appendMarkdown('\n\n---\n\n');
+  appendTraceButtons(md, filePath, line);
+
+  return md;
+}
+
+function appendPrSection(
+  md: vscode.MarkdownString,
+  display: DisplayResult,
+  label?: string,
+  icon = '$(git-pull-request)',
+): void {
+  const suffix = label ? ` (${label})` : '';
+  md.appendMarkdown(`${icon} **PR #${display.prNumber}**${suffix}\n\n`);
+  md.appendMarkdown(`[${display.prTitle}](${display.prUrl})\n\n`);
+}
+
+function appendActionButtons(
+  md: vscode.MarkdownString,
+  primaryDisplay: DisplayResult,
+  filePath: string,
+  line: number,
+): void {
+  const copyArgs = encodeURIComponent(
+    JSON.stringify([primaryDisplay.prUrl]),
+  );
   const detailArgs = encodeURIComponent(JSON.stringify([filePath, line]));
 
   md.appendMarkdown(
@@ -24,12 +72,19 @@ export function formatHoverMarkdown(
   md.appendMarkdown(
     `$(book) [Show Details](command:lineLore.showDetails?${detailArgs})`,
   );
+}
 
-  md.appendMarkdown('\n\n---\n\n');
+function appendTraceButtons(
+  md: vscode.MarkdownString,
+  filePath: string,
+  line: number,
+): void {
   const retraceArgs = encodeURIComponent(JSON.stringify([filePath, line]));
   md.appendMarkdown(
     `$(refresh) [Re-trace](command:lineLore.traceFromHover?${retraceArgs})`,
   );
-
-  return md;
+  md.appendMarkdown('&ensp;');
+  md.appendMarkdown(
+    `$(pinned) [Strict](command:lineLore.traceStrictFromHover?${retraceArgs})`,
+  );
 }

@@ -77,4 +77,89 @@ describe('formatHoverMarkdown', () => {
     );
     expect(value).toContain(`command:lineLore.traceFromHover?${expectedArgs}`);
   });
+
+  it('includes Strict trace button with traceStrictFromHover command', () => {
+    const md = formatHoverMarkdown(display, '/src/auth.ts', 10);
+    const value = (md as unknown as { value: string }).value;
+
+    const expectedArgs = encodeURIComponent(
+      JSON.stringify(['/src/auth.ts', 10]),
+    );
+    expect(value).toContain('$(pinned)');
+    expect(value).toContain(
+      `command:lineLore.traceStrictFromHover?${expectedArgs}`,
+    );
+  });
+
+  describe('Scenario B: strict-only cached', () => {
+    it('shows $(pinned) icon and (Modifier) label', () => {
+      const notFound: DisplayResult = {
+        found: false,
+        operatingLevel: 0 as const,
+        warnings: [],
+      };
+      const strictOnly: DisplayResult = {
+        found: true,
+        prNumber: 99,
+        prTitle: 'Refactor auth flow',
+        prUrl: 'https://github.com/org/repo/pull/99',
+        operatingLevel: 2 as const,
+        warnings: [],
+      };
+      const md = formatHoverMarkdown(notFound, '/src/auth.ts', 10, strictOnly);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain('$(pinned)');
+      expect(value).toContain('(Modifier)');
+      expect(value).toContain('PR #99');
+      expect(value).toContain(
+        '[Refactor auth flow](https://github.com/org/repo/pull/99)',
+      );
+      // Copy Link should use strict prUrl
+      const copyArgs = encodeURIComponent(
+        JSON.stringify(['https://github.com/org/repo/pull/99']),
+      );
+      expect(value).toContain(`command:lineLore.copyPrLink?${copyArgs}`);
+    });
+  });
+
+  describe('Scenario C: both cached, different PRs', () => {
+    it('shows Origin and Modifier labeled sections', () => {
+      const strictDiff: DisplayResult = {
+        found: true,
+        prNumber: 99,
+        prTitle: 'Refactor auth flow',
+        prUrl: 'https://github.com/org/repo/pull/99',
+        operatingLevel: 2 as const,
+        warnings: [],
+      };
+      const md = formatHoverMarkdown(display, '/src/auth.ts', 10, strictDiff);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain('(Origin)');
+      expect(value).toContain('(Modifier)');
+      expect(value).toContain('PR #42');
+      expect(value).toContain('PR #99');
+    });
+  });
+
+  describe('Scenario D: both cached, same PR', () => {
+    it('shows $(check) match indicator', () => {
+      const strictSame: DisplayResult = {
+        found: true,
+        prNumber: 42,
+        prTitle: 'Fix auth bug',
+        prUrl: 'https://github.com/org/repo/pull/42',
+        operatingLevel: 2 as const,
+        warnings: [],
+      };
+      const md = formatHoverMarkdown(display, '/src/auth.ts', 10, strictSame);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain('$(check)');
+      expect(value).toContain('Origin and modifier match');
+      expect(value).not.toContain('(Origin)');
+      expect(value).not.toContain('(Modifier)');
+    });
+  });
 });

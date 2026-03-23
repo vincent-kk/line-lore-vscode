@@ -9,7 +9,10 @@ import { executeTracePRRange } from './tracePRRange.js';
 import { executeHealthCheck } from './healthCheck.js';
 import { executeClearCache } from './clearCache.js';
 import { executeGraphExplore } from './graphExplore.js';
-import { executeTraceFromHover } from './traceFromHover.js';
+import {
+  executeTraceFromHover,
+  executeTraceStrictFromHover,
+} from './traceFromHover.js';
 import { handleTraceError } from './traceHelpers.js';
 
 export function registerCommands(
@@ -42,6 +45,10 @@ export function registerCommands(
     vscode.commands.registerCommand(
       'lineLore.traceFromHover',
       executeTraceFromHover(adapter, statusBar, detailPanel),
+    ),
+    vscode.commands.registerCommand(
+      'lineLore.traceStrictFromHover',
+      executeTraceStrictFromHover(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand('lineLore.copyPrLink', (prUrl: string) => {
       void vscode.env.clipboard.writeText(prUrl);

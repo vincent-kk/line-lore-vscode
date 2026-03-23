@@ -14,7 +14,9 @@ export class LineLoreAdapter {
     filePath: string,
     line: number,
     endLine?: number,
-    overrides?: Partial<Pick<TraceOptions, 'deep' | 'noAst' | 'noCache'>>,
+    overrides?: Partial<
+      Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'strict'>
+    >,
   ): Promise<TraceFullResult> {
     const config = vscode.workspace.getConfiguration('lineLore');
     const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))
@@ -28,6 +30,7 @@ export class LineLoreAdapter {
       noAst: overrides?.noAst ?? config.get<boolean>('trace.noAst', false),
       noCache:
         overrides?.noCache ?? config.get<boolean>('trace.noCache', false),
+      ...(overrides?.strict && { strict: true }),
     };
     return trace(options);
   }
@@ -42,7 +45,11 @@ export class LineLoreAdapter {
     return health(cwd ? { cwd } : undefined);
   }
 
-  async traceCached(filePath: string, line: number): Promise<TraceFullResult> {
+  async traceCached(
+    filePath: string,
+    line: number,
+    strict?: boolean,
+  ): Promise<TraceFullResult> {
     const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))
       ?.uri.fsPath;
     return trace({
@@ -50,6 +57,7 @@ export class LineLoreAdapter {
       line,
       ...(cwd !== undefined && { cwd }),
       cacheOnly: true,
+      ...(strict && { strict: true }),
     });
   }
 

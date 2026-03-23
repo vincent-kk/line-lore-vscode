@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { executeTraceFromHover } from '../traceFromHover.js';
+import {
+  executeTraceFromHover,
+  executeTraceStrictFromHover,
+} from '../traceFromHover.js';
 import { LineLoreError } from '@lumy-pack/line-lore';
 
 vi.mock('vscode', () => ({
@@ -127,6 +130,8 @@ describe('executeTraceFromHover', () => {
     expect(mockAdapter.trace).toHaveBeenCalledWith(
       '/workspace/src/auth.ts',
       42,
+      undefined,
+      undefined,
     );
   });
 
@@ -205,5 +210,123 @@ describe('executeTraceFromHover', () => {
     await handler('/workspace/src/auth.ts', 42);
 
     expect(mockStatusBar.showError).toHaveBeenCalled();
+  });
+});
+
+describe('executeTraceStrictFromHover', () => {
+  const mockAdapter = {
+    trace: vi.fn(),
+  };
+
+  const mockStatusBar = {
+    showLoading: vi.fn(),
+    showResult: vi.fn(),
+    showError: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('calls adapter.trace with { strict: true } override', async () => {
+    mockAdapter.trace.mockResolvedValue({
+      nodes: [
+        {
+          type: 'pull_request',
+          trackingMethod: 'api',
+          confidence: 'exact',
+          prNumber: 99,
+          prTitle: 'refactor: auth flow',
+          prUrl: 'https://github.com/org/repo/pull/99',
+        },
+      ],
+      operatingLevel: 2,
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
+      warnings: [],
+    });
+
+    const handler = executeTraceStrictFromHover(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
+    await handler('/workspace/src/auth.ts', 42);
+
+    expect(mockAdapter.trace).toHaveBeenCalledWith(
+      '/workspace/src/auth.ts',
+      42,
+      undefined,
+      { strict: true },
+    );
+  });
+
+  it('shows strict-specific warning when no PR found', async () => {
+    mockAdapter.trace.mockResolvedValue({
+      nodes: [
+        {
+          type: 'original_commit',
+          sha: 'abc123',
+          trackingMethod: 'blame',
+          confidence: 'exact',
+        },
+      ],
+      operatingLevel: 0,
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
+      warnings: [],
+    });
+
+    const handler = executeTraceStrictFromHover(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
+    await handler('/workspace/src/auth.ts', 42);
+
+    expect(vscode.window.showWarningMessage).toHaveBeenCalledWith(
+      'No PR found (strict mode — no rename/move detection). Commit: abc123',
+    );
+  });
+
+  it('shows [Strict] prefix in info message when PR found', async () => {
+    mockAdapter.trace.mockResolvedValue({
+      nodes: [
+        {
+          type: 'pull_request',
+          trackingMethod: 'api',
+          confidence: 'exact',
+          prNumber: 99,
+          prTitle: 'refactor: auth flow',
+          prUrl: 'https://github.com/org/repo/pull/99',
+        },
+      ],
+      operatingLevel: 2,
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
+      warnings: [],
+    });
+
+    const handler = executeTraceStrictFromHover(
+      mockAdapter as never,
+      mockStatusBar as never,
+    );
+    await handler('/workspace/src/auth.ts', 42);
+
+    expect(vscode.window.showInformationMessage).toHaveBeenCalledWith(
+      '[Strict] PR #99: refactor: auth flow',
+      'Open PR',
+      'Copy Link',
+    );
   });
 });

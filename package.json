@@ -64,6 +64,10 @@
         "title": "Line Lore: Trace From Hover"
       },
       {
+        "command": "lineLore.traceStrictFromHover",
+        "title": "Line Lore: Strict Trace From Hover"
+      },
+      {
         "command": "lineLore.copyPrLink",
         "title": "Line Lore: Copy PR Link"
       },
@@ -108,6 +112,10 @@
         },
         {
           "command": "lineLore.traceFromHover",
+          "when": "false"
+        },
+        {
+          "command": "lineLore.traceStrictFromHover",
           "when": "false"
         },
         {
@@ -162,7 +170,7 @@
     }
   },
   "dependencies": {
-    "@lumy-pack/line-lore": "0.0.7"
+    "@lumy-pack/line-lore": "/Users/Vincent/Workspace/lumy-pack/packages/line-lore/package.tgz"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
