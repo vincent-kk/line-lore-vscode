@@ -14,3 +14,7 @@ coverage/
 !.vscode/tasks.json
 
 .DS_Store
+
+.filid/*
+!.filid/config.json
+!.filid/debt/
