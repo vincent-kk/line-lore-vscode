@@ -4,6 +4,7 @@ import type { DetailPanelManager } from '../views/index.js';
 import type { DisplayResult, TraceFullResult } from '../types/index.js';
 import { formatErrorMessage } from '../core/index.js';
 import { LineLoreError } from '../types/index.js';
+import { isUncommittedLine } from '../utils/uncommitted.js';
 
 export async function showTraceResult(
   display: DisplayResult,
@@ -35,6 +36,10 @@ export async function showTraceResult(
     } else if (action === 'Show Details' && detailPanel) {
       detailPanel.show(filePath, line, result, endLine);
     }
+  } else if (isUncommittedLine(display.commitSha)) {
+    void vscode.window.showInformationMessage(
+      'This line has not been committed yet.',
+    );
   } else {
     void vscode.window.showWarningMessage(
       `${noFoundLabel} Commit: ${display.commitSha ?? 'unknown'}`,

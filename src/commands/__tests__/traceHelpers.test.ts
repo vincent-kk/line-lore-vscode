@@ -131,6 +131,22 @@ describe('showTraceResult', () => {
       'No PR found. Commit: abc123',
     );
   });
+
+  it('shows uncommitted message when commitSha is zero-hash', async () => {
+    const display: DisplayResult = {
+      found: false,
+      commitSha: '0'.repeat(40),
+      operatingLevel: 0,
+      warnings: [],
+    };
+
+    await showTraceResult(display, mockResult, '/file.ts', 1, 'No PR found.');
+
+    expect(vscode.window.showInformationMessage).toHaveBeenCalledWith(
+      'This line has not been committed yet.',
+    );
+    expect(vscode.window.showWarningMessage).not.toHaveBeenCalled();
+  });
 });
 
 describe('handleTraceError', () => {

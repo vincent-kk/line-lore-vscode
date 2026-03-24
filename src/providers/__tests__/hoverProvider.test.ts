@@ -240,10 +240,10 @@ describe('LineLoreHoverProvider', () => {
     expect((originDisplay as { found: boolean }).found).toBe(true);
   });
 
-  it('returns static fallback when neither variant finds a PR', async () => {
+  it('returns undefined when line is uncommitted (zero-hash commitSha)', async () => {
     const positionAtEnd = { line: 41, character: 20 } as never;
     mockTraceCached.mockResolvedValue({
-      nodes: [],
+      nodes: [{ type: 'original_commit', sha: '0'.repeat(40) }],
       operatingLevel: 0,
       featureFlags: {
         astDiff: false,
@@ -255,6 +255,36 @@ describe('LineLoreHoverProvider', () => {
     });
     vi.mocked(formatTraceResult).mockReturnValue({
       found: false,
+      commitSha: '0'.repeat(40),
+      operatingLevel: 0 as const,
+      warnings: [],
+    });
+
+    const result = await provider.provideHover(
+      mockDocument,
+      positionAtEnd,
+      mockToken,
+    );
+
+    expect(result).toBeUndefined();
+  });
+
+  it('returns static fallback when committed line has no cached PR', async () => {
+    const positionAtEnd = { line: 41, character: 20 } as never;
+    mockTraceCached.mockResolvedValue({
+      nodes: [{ type: 'original_commit', sha: 'abc123' }],
+      operatingLevel: 0,
+      featureFlags: {
+        astDiff: false,
+        deepTrace: false,
+        commitGraph: false,
+        graphql: false,
+      },
+      warnings: [],
+    });
+    vi.mocked(formatTraceResult).mockReturnValue({
+      found: false,
+      commitSha: 'abc123',
       operatingLevel: 0 as const,
       warnings: [],
     });

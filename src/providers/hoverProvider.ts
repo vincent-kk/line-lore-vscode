@@ -3,6 +3,7 @@ import type { LineLoreAdapter } from '../core/index.js';
 import type { DisplayResult } from '../types/index.js';
 import { formatTraceResult } from '../core/index.js';
 import { formatHoverMarkdown } from './hoverMarkdown.js';
+import { isUncommittedLine } from '../utils/uncommitted.js';
 
 export class LineLoreHoverProvider implements vscode.HoverProvider {
   constructor(private adapter: LineLoreAdapter) {}
@@ -64,6 +65,13 @@ export class LineLoreHoverProvider implements vscode.HoverProvider {
         return new vscode.Hover(
           formatHoverMarkdown(display, filePath, line, originDisplay),
         );
+      }
+      const bothUncommitted =
+        (display === null || isUncommittedLine(display.commitSha)) &&
+        (originDisplay === null || isUncommittedLine(originDisplay.commitSha));
+
+      if (bothUncommitted) {
+        return undefined;
       }
     } catch {
       // Cache failure or cancellation — fall through to static fallback
