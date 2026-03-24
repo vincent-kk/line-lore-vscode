@@ -43,6 +43,15 @@ export function formatHoverMarkdown(
   return md;
 }
 
+function escapeMarkdownLinkText(text: string): string {
+  return text
+    .replace(/\\/g, '\\\\')
+    .replace(/\[/g, '\\[')
+    .replace(/\]/g, '\\]')
+    .replace(/\(/g, '\\(')
+    .replace(/\)/g, '\\)');
+}
+
 function appendPrSection(
   md: vscode.MarkdownString,
   display: DisplayResult,
@@ -51,7 +60,7 @@ function appendPrSection(
 ): void {
   const suffix = label ? ` (${label})` : '';
   md.appendMarkdown(`${icon} **PR #${display.prNumber}**${suffix}\n\n`);
-  md.appendMarkdown(`[${display.prTitle}](${display.prUrl})\n\n`);
+  md.appendMarkdown(`[${escapeMarkdownLinkText(display.prTitle ?? '')}](${display.prUrl})\n\n`);
 }
 
 function appendActionButtons(

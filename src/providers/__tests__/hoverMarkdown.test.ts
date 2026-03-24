@@ -91,6 +91,73 @@ describe('formatHoverMarkdown', () => {
     );
   });
 
+  describe('PR title with markdown special characters', () => {
+    it('escapes markdown link pattern in PR title', () => {
+      const mdLinkDisplay: DisplayResult = {
+        ...display,
+        prTitle: '[label](feat/asd):some description',
+      };
+      const md = formatHoverMarkdown(mdLinkDisplay, '/src/auth.ts', 10);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain(
+        '[\\[label\\]\\(feat/asd\\):some description](https://github.com/org/repo/pull/42)',
+      );
+    });
+
+    it('escapes brackets in PR title', () => {
+      const bracketDisplay: DisplayResult = {
+        ...display,
+        prTitle: '[WIP] work in progress',
+      };
+      const md = formatHoverMarkdown(bracketDisplay, '/src/auth.ts', 10);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain(
+        '[\\[WIP\\] work in progress](https://github.com/org/repo/pull/42)',
+      );
+    });
+
+    it('escapes parentheses in PR title', () => {
+      const parenDisplay: DisplayResult = {
+        ...display,
+        prTitle: 'feat(scope): add feature',
+      };
+      const md = formatHoverMarkdown(parenDisplay, '/src/auth.ts', 10);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain(
+        '[feat\\(scope\\): add feature](https://github.com/org/repo/pull/42)',
+      );
+    });
+
+    it('escapes label-branch pattern [label](feat):abcde', () => {
+      const branchLabelDisplay: DisplayResult = {
+        ...display,
+        prTitle: '[label](feat):abcde',
+      };
+      const md = formatHoverMarkdown(branchLabelDisplay, '/src/auth.ts', 10);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain(
+        '[\\[label\\]\\(feat\\):abcde](https://github.com/org/repo/pull/42)',
+      );
+    });
+
+    it('preserves backticks in PR title without issues', () => {
+      const backtickDisplay: DisplayResult = {
+        ...display,
+        prTitle: 'fix `null` check in auth',
+      };
+      const md = formatHoverMarkdown(backtickDisplay, '/src/auth.ts', 10);
+      const value = (md as unknown as { value: string }).value;
+
+      expect(value).toContain(
+        '[fix `null` check in auth](https://github.com/org/repo/pull/42)',
+      );
+    });
+  });
+
   describe('Scenario B: origin-only cached', () => {
     it('shows $(git-merge) icon and (Origin) label', () => {
       const notFound: DisplayResult = {
