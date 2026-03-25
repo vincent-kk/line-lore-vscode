@@ -34,8 +34,8 @@ describe('StatusBarController', () => {
     vi.useRealTimers();
   });
 
-  it('creates StatusBarItem with healthCheck command', () => {
-    expect(mockStatusBarItem.command).toBe('lineLore.healthCheck');
+  it('creates StatusBarItem with statusBarMenu command', () => {
+    expect(mockStatusBarItem.command).toBe('lineLore.statusBarMenu');
   });
 
   it('showLoading displays spinner text', () => {

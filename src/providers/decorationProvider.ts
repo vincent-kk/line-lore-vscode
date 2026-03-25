@@ -1,76 +1,108 @@
 import * as vscode from 'vscode';
 
-export class DecorationController {
-  private decorationType: vscode.TextEditorDecorationType;
-  private removeTimer: ReturnType<typeof setTimeout> | undefined;
-  private selectionListener: vscode.Disposable | undefined;
-  private activeEditor: vscode.TextEditor | undefined;
+interface LensEntry {
+  uri: string;
+  filePath: string;
+  line: number;
+  prNumber: number;
+  prUrl: string;
+  prTitle: string;
+}
+
+export class DecorationController implements vscode.CodeLensProvider {
+  private readonly _onDidChangeCodeLenses = new vscode.EventEmitter<void>();
+  readonly onDidChangeCodeLenses = this._onDidChangeCodeLenses.event;
+
+  private registration: vscode.Disposable | undefined;
+  private lenses = new Map<string, LensEntry>();
 
   constructor() {
-    this.decorationType = vscode.window.createTextEditorDecorationType({
-      after: {
-        color: new vscode.ThemeColor('editorCodeLens.foreground'),
-        fontStyle: 'italic',
-        margin: '0 0 0 1em',
-      },
-    });
+    this.registration = vscode.languages.registerCodeLensProvider(
+      { scheme: 'file' },
+      this,
+    );
+  }
+
+  private static key(uri: string, line: number): string {
+    return `${uri}:${line}`;
+  }
+
+  provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
+    const docUri = document.uri.toString();
+    const result: vscode.CodeLens[] = [];
+
+    for (const entry of this.lenses.values()) {
+      if (entry.uri !== docUri) {
+        continue;
+      }
+      const range = new vscode.Range(entry.line - 1, 0, entry.line - 1, 0);
+      const key = DecorationController.key(entry.uri, entry.line);
+      result.push(
+        new vscode.CodeLens(range, {
+          title: `$(git-pull-request) PR #${entry.prNumber}: ${entry.prTitle}`,
+          command: 'vscode.open',
+          arguments: [vscode.Uri.parse(entry.prUrl)],
+        }),
+        new vscode.CodeLens(range, {
+          title: ' $(info) ',
+          tooltip: 'Show Details',
+          command: 'lineLore.showDetails',
+          arguments: [entry.filePath, entry.line],
+        }),
+        new vscode.CodeLens(range, {
+          title: ' $(close) ',
+          tooltip: 'Dismiss',
+          command: 'lineLore.clearDecoration',
+          arguments: [key],
+        }),
+      );
+    }
+
+    return result;
   }
 
   showDecoration(
     editor: vscode.TextEditor,
     line: number,
     prNumber: number,
-    hoverMessage?: vscode.MarkdownString,
+    prUrl: string,
+    prTitle?: string,
   ): void {
     const config = vscode.workspace.getConfiguration('lineLore');
     if (!config.get<boolean>('inlineDecoration.enabled', true)) {
       return;
     }
 
-    this.clear();
-    this.activeEditor = editor;
+    const uri = editor.document.uri.toString();
+    const key = DecorationController.key(uri, line);
 
-    const range = new vscode.Range(line - 1, 0, line - 1, 0);
-    const decorationOptions: vscode.DecorationOptions = {
-      range,
-      renderOptions: {
-        after: { contentText: `← PR #${prNumber}` },
-      },
-    };
-    if (hoverMessage) {
-      decorationOptions.hoverMessage = hoverMessage;
+    this.lenses.set(key, {
+      uri,
+      filePath: editor.document.uri.fsPath,
+      line,
+      prNumber,
+      prUrl,
+      prTitle: prTitle ?? '',
+    });
+    this._onDidChangeCodeLenses.fire();
+  }
+
+  clearOne(key: string): void {
+    if (this.lenses.delete(key)) {
+      this._onDidChangeCodeLenses.fire();
     }
-    editor.setDecorations(this.decorationType, [decorationOptions]);
-
-    const timeoutSec = config.get<number>('inlineDecoration.timeout', 30);
-    if (timeoutSec > 0) {
-      this.removeTimer = setTimeout(() => this.clear(), timeoutSec * 1000);
-    }
-
-    this.selectionListener = vscode.window.onDidChangeTextEditorSelection(
-      (e) => {
-        if (e.textEditor === editor) {
-          this.clear();
-        }
-      },
-    );
   }
 
   clear(): void {
-    if (this.removeTimer !== undefined) {
-      clearTimeout(this.removeTimer);
-      this.removeTimer = undefined;
-    }
-    this.selectionListener?.dispose();
-    this.selectionListener = undefined;
-    if (this.activeEditor) {
-      this.activeEditor.setDecorations(this.decorationType, []);
-      this.activeEditor = undefined;
+    if (this.lenses.size > 0) {
+      this.lenses.clear();
+      this._onDidChangeCodeLenses.fire();
     }
   }
 
   dispose(): void {
     this.clear();
-    this.decorationType.dispose();
+    this.registration?.dispose();
+    this._onDidChangeCodeLenses.dispose();
   }
 }

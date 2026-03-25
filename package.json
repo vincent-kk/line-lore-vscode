@@ -74,6 +74,14 @@
       {
         "command": "lineLore.showDetails",
         "title": "Line Lore: Show Details"
+      },
+      {
+        "command": "lineLore.clearAllDecorations",
+        "title": "Line Lore: Clear All Decorations"
+      },
+      {
+        "command": "lineLore.clearDecoration",
+        "title": "Line Lore: Clear Decoration"
       }
     ],
     "menus": {
@@ -124,6 +132,14 @@
         },
         {
           "command": "lineLore.showDetails",
+          "when": "false"
+        },
+        {
+          "command": "lineLore.clearAllDecorations",
+          "when": "lineLore.gitDetected"
+        },
+        {
+          "command": "lineLore.clearDecoration",
           "when": "false"
         }
       ]

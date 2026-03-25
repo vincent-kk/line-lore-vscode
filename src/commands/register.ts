@@ -4,6 +4,7 @@ import type {
   StatusBarController,
   DetailPanelManager,
 } from '../views/index.js';
+import type { DecorationController } from '../providers/index.js';
 import { executeTracePR } from './tracePR.js';
 import { executeTracePRRange } from './tracePRRange.js';
 import { executeHealthCheck } from './healthCheck.js';
@@ -20,6 +21,7 @@ export function registerCommands(
   adapter: LineLoreAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
+  decoration?: DecorationController,
 ): void {
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -44,11 +46,11 @@ export function registerCommands(
     ),
     vscode.commands.registerCommand(
       'lineLore.traceFromHover',
-      executeTraceFromHover(adapter, statusBar, detailPanel),
+      executeTraceFromHover(adapter, statusBar, detailPanel, decoration),
     ),
     vscode.commands.registerCommand(
       'lineLore.traceOriginFromHover',
-      executeTraceOriginFromHover(adapter, statusBar, detailPanel),
+      executeTraceOriginFromHover(adapter, statusBar, detailPanel, decoration),
     ),
     vscode.commands.registerCommand('lineLore.copyPrLink', (prUrl: string) => {
       void vscode.env.clipboard.writeText(prUrl);

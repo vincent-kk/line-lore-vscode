@@ -46,7 +46,7 @@ describe('ProviderManager', () => {
     manager.register(mockContext as never);
 
     expect(vscode.languages.registerHoverProvider).toHaveBeenCalledWith(
-      '*',
+      { scheme: 'file' },
       expect.anything(),
     );
   });

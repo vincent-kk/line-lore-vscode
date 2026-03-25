@@ -1,29 +1,33 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DecorationController } from '../decorationProvider.js';
 
-const mockDecorationType = { dispose: vi.fn() };
-let selectionCallback: ((e: unknown) => void) | undefined;
+const mockRegistration = { dispose: vi.fn() };
 
 vi.mock('vscode', () => ({
-  window: {
-    createTextEditorDecorationType: vi.fn(() => mockDecorationType),
-    onDidChangeTextEditorSelection: vi.fn((cb: (e: unknown) => void) => {
-      selectionCallback = cb;
-      return { dispose: vi.fn() };
-    }),
-  },
   workspace: {
     getConfiguration: vi.fn(() => ({
       get: vi.fn((_key: string, defaultValue: unknown) => defaultValue),
     })),
   },
-  ThemeColor: vi.fn((id: string) => ({ id })),
+  languages: {
+    registerCodeLensProvider: vi.fn(() => mockRegistration),
+  },
+  EventEmitter: vi.fn(() => ({
+    event: vi.fn(),
+    fire: vi.fn(),
+    dispose: vi.fn(),
+  })),
   Range: vi.fn((sl: number, sc: number, el: number, ec: number) => ({
     sl,
     sc,
     el,
     ec,
   })),
+  CodeLens: vi.fn(
+    (range: unknown, command: unknown) =>
+      ({ range, command }) as Record<string, unknown>,
+  ),
+  Uri: { parse: (s: string) => ({ toString: () => s }) },
 }));
 
 import * as vscode from 'vscode';
@@ -31,55 +35,180 @@ import * as vscode from 'vscode';
 describe('DecorationController', () => {
   let controller: DecorationController;
   const mockEditor = {
-    setDecorations: vi.fn(),
+    document: {
+      uri: {
+        toString: () => 'file:///workspace/src/auth.ts',
+        fsPath: '/workspace/src/auth.ts',
+      },
+    },
+  };
+  const mockDocument = {
+    uri: { toString: () => 'file:///workspace/src/auth.ts' },
   };
 
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.clearAllMocks();
     vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
       get: vi.fn((_key: string, defaultValue: unknown) => defaultValue),
     } as never);
-    selectionCallback = undefined;
     controller = new DecorationController();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
+  it('registers CodeLens provider on construction', () => {
+    expect(vscode.languages.registerCodeLensProvider).toHaveBeenCalledWith(
+      { scheme: 'file' },
+      controller,
+    );
   });
 
-  it('shows decoration with PR number', () => {
-    controller.showDecoration(mockEditor as never, 10, 42);
+  it('returns empty CodeLens array when no decoration active', () => {
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toEqual([]);
+  });
 
-    expect(mockEditor.setDecorations).toHaveBeenCalledWith(mockDecorationType, [
+  it('returns PR CodeLens and dismiss CodeLens after showDecoration', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+      'feat: auth',
+    );
+
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toHaveLength(3);
+    expect(lenses[0]).toEqual(
       expect.objectContaining({
-        renderOptions: { after: { contentText: '← PR #42' } },
+        command: expect.objectContaining({
+          title: '$(git-pull-request) PR #42: feat: auth',
+          command: 'vscode.open',
+        }),
       }),
-    ]);
-  });
-
-  it('auto-removes after 30 seconds', () => {
-    controller.showDecoration(mockEditor as never, 10, 42);
-    vi.clearAllMocks();
-
-    vi.advanceTimersByTime(30000);
-
-    expect(mockEditor.setDecorations).toHaveBeenCalledWith(
-      mockDecorationType,
-      [],
+    );
+    expect(lenses[1]).toEqual(
+      expect.objectContaining({
+        command: expect.objectContaining({
+          title: ' $(info) ',
+          command: 'lineLore.showDetails',
+        }),
+      }),
+    );
+    expect(lenses[2]).toEqual(
+      expect.objectContaining({
+        command: expect.objectContaining({
+          title: ' $(close) ',
+          command: 'lineLore.clearDecoration',
+        }),
+      }),
     );
   });
 
-  it('removes on cursor move', () => {
-    controller.showDecoration(mockEditor as never, 10, 42);
-    vi.clearAllMocks();
-
-    selectionCallback?.({ textEditor: mockEditor });
-
-    expect(mockEditor.setDecorations).toHaveBeenCalledWith(
-      mockDecorationType,
-      [],
+  it('supports multiple CodeLenses on different lines', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+      'feat: auth',
     );
+    controller.showDecoration(
+      mockEditor as never,
+      20,
+      99,
+      'https://github.com/org/repo/pull/99',
+      'fix: bug',
+    );
+
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toHaveLength(6);
+  });
+
+  it('replaces CodeLens on same line', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+      'feat: auth',
+    );
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      99,
+      'https://github.com/org/repo/pull/99',
+      'fix: bug',
+    );
+
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toHaveLength(3);
+    expect(lenses[0]).toEqual(
+      expect.objectContaining({
+        command: expect.objectContaining({
+          title: '$(git-pull-request) PR #99: fix: bug',
+        }),
+      }),
+    );
+  });
+
+  it('clearOne removes only targeted CodeLens', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+      'feat: auth',
+    );
+    controller.showDecoration(
+      mockEditor as never,
+      20,
+      99,
+      'https://github.com/org/repo/pull/99',
+      'fix: bug',
+    );
+
+    controller.clearOne('file:///workspace/src/auth.ts:10');
+
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toHaveLength(3);
+    expect(lenses[0]).toEqual(
+      expect.objectContaining({
+        command: expect.objectContaining({
+          title: '$(git-pull-request) PR #99: fix: bug',
+        }),
+      }),
+    );
+  });
+
+  it('clear() removes all CodeLenses', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+    );
+    controller.showDecoration(
+      mockEditor as never,
+      20,
+      99,
+      'https://github.com/org/repo/pull/99',
+    );
+    controller.clear();
+
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toEqual([]);
+  });
+
+  it('returns empty array for different document', () => {
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+    );
+
+    const otherDoc = { uri: { toString: () => 'file:///other/file.ts' } };
+    const lenses = controller.provideCodeLenses(otherDoc as never);
+    expect(lenses).toEqual([]);
   });
 
   it('respects disabled config', () => {
@@ -93,44 +222,19 @@ describe('DecorationController', () => {
       get: mockGet,
     } as never);
 
-    controller.showDecoration(mockEditor as never, 10, 42);
+    controller.showDecoration(
+      mockEditor as never,
+      10,
+      42,
+      'https://github.com/org/repo/pull/42',
+    );
 
-    expect(mockEditor.setDecorations).not.toHaveBeenCalled();
+    const lenses = controller.provideCodeLenses(mockDocument as never);
+    expect(lenses).toEqual([]);
   });
 
-  it('clear() cancels pending timer', () => {
-    controller.showDecoration(mockEditor as never, 10, 42);
-    controller.clear();
-
-    vi.advanceTimersByTime(30000);
-  });
-
-  it('dispose cleans up decoration type', () => {
+  it('dispose cleans up registration', () => {
     controller.dispose();
-    expect(mockDecorationType.dispose).toHaveBeenCalled();
-  });
-
-  it('includes hoverMessage in decoration options when provided', () => {
-    const hoverMd = {
-      value: 'PR info',
-      isTrusted: true,
-      supportThemeIcons: true,
-    };
-    controller.showDecoration(mockEditor as never, 10, 42, hoverMd as never);
-
-    expect(mockEditor.setDecorations).toHaveBeenCalledWith(mockDecorationType, [
-      expect.objectContaining({
-        hoverMessage: hoverMd,
-        renderOptions: { after: { contentText: '← PR #42' } },
-      }),
-    ]);
-  });
-
-  it('omits hoverMessage when not provided', () => {
-    controller.showDecoration(mockEditor as never, 10, 42);
-
-    const callArgs = mockEditor.setDecorations.mock
-      .calls[0]?.[1]?.[0] as Record<string, unknown>;
-    expect(callArgs).not.toHaveProperty('hoverMessage');
+    expect(mockRegistration.dispose).toHaveBeenCalled();
   });
 });

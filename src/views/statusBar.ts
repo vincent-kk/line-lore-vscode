@@ -13,7 +13,7 @@ export class StatusBarController {
       vscode.StatusBarAlignment.Right,
       100,
     );
-    this.item.command = 'lineLore.healthCheck';
+    this.item.command = 'lineLore.statusBarMenu';
   }
 
   showPersistentLevel(level: OperatingLevel): void {
