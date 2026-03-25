@@ -14,6 +14,7 @@ export class DecorationController implements vscode.CodeLensProvider {
   readonly onDidChangeCodeLenses = this._onDidChangeCodeLenses.event;
 
   private registration: vscode.Disposable | undefined;
+  private closeListener: vscode.Disposable | undefined;
   private lenses = new Map<string, LensEntry>();
 
   constructor() {
@@ -21,6 +22,14 @@ export class DecorationController implements vscode.CodeLensProvider {
       { scheme: 'file' },
       this,
     );
+    this.closeListener = vscode.window.tabGroups.onDidChangeTabs((e) => {
+      for (const tab of e.closed) {
+        const input = tab.input as { uri?: vscode.Uri } | undefined;
+        if (input?.uri) {
+          this.clearByUri(input.uri.toString());
+        }
+      }
+    });
   }
 
   private static key(uri: string, line: number): string {
@@ -93,6 +102,19 @@ export class DecorationController implements vscode.CodeLensProvider {
     }
   }
 
+  clearByUri(uri: string): void {
+    let changed = false;
+    for (const [key, entry] of this.lenses) {
+      if (entry.uri === uri) {
+        this.lenses.delete(key);
+        changed = true;
+      }
+    }
+    if (changed) {
+      this._onDidChangeCodeLenses.fire();
+    }
+  }
+
   clear(): void {
     if (this.lenses.size > 0) {
       this.lenses.clear();
@@ -102,6 +124,7 @@ export class DecorationController implements vscode.CodeLensProvider {
 
   dispose(): void {
     this.clear();
+    this.closeListener?.dispose();
     this.registration?.dispose();
     this._onDidChangeCodeLenses.dispose();
   }

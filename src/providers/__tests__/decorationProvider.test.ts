@@ -9,6 +9,14 @@ vi.mock('vscode', () => ({
       get: vi.fn((_key: string, defaultValue: unknown) => defaultValue),
     })),
   },
+  window: {
+    tabGroups: {
+      onDidChangeTabs: vi.fn(() => ({ dispose: vi.fn() })),
+    },
+  },
+  TabInputText: class {
+    constructor(public uri: { toString: () => string }) {}
+  },
   languages: {
     registerCodeLensProvider: vi.fn(() => mockRegistration),
   },
