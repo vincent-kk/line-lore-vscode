@@ -174,6 +174,12 @@ git tag "v$NEW_VERSION"
 
 ok "Committed and tagged v$NEW_VERSION"
 
+# ─── 6. Push commit & tag ───────────────────────────────────
+info "Pushing commit and tag to remote..."
+git push
+git push origin "v$NEW_VERSION"
+ok "Pushed commit and tag v$NEW_VERSION"
+
 # ─── Done ────────────────────────────────────────────────────
 echo ""
 ok "Release v$NEW_VERSION complete!"
@@ -182,5 +188,4 @@ info "Next steps:"
 echo "  1. Edit CHANGELOG.md to fill in the release notes"
 echo "  2. Run 'pnpm vsce:package' to build the .vsix"
 echo "  3. Run 'pnpm vsce:publish' to publish"
-echo "  4. Run 'git push && git push --tags' to push"
 echo ""
