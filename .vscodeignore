@@ -4,6 +4,7 @@
 .omc/**
 .metadata/**
 node_modules/**
+.yarn/**
 src/**
 out/**
 esbuild.js

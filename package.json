@@ -199,8 +199,8 @@
     "lint": "eslint src",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "vsce:package": "pnpm vsce package --no-dependencies",
-    "vsce:publish": "pnpm vsce publish --no-dependencies",
+    "vsce:package": "pnpm vsce package --no-dependencies --no-yarn",
+    "vsce:publish": "pnpm vsce publish --no-dependencies --no-yarn",
     "version:patch": "bash scripts/version.sh patch",
     "version:minor": "bash scripts/version.sh minor",
     "version:major": "bash scripts/version.sh major"
