@@ -186,7 +186,7 @@
     }
   },
   "dependencies": {
-    "@lumy-pack/line-lore": "0.0.8"
+    "@lumy-pack/line-lore": "0.0.9"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
