@@ -26,7 +26,7 @@ export class ProviderManager {
 
     if (enabled && !this.hoverDisposable) {
       this.hoverDisposable = vscode.languages.registerHoverProvider(
-        { scheme: 'file' },
+        '*',
         new LineLoreHoverProvider(this.adapter),
       );
       context.subscriptions.push(this.hoverDisposable);
