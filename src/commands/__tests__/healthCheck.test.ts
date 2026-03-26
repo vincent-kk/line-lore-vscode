@@ -90,7 +90,7 @@ describe('executeHealthCheck', () => {
     await handler();
 
     expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
-      'Line Lore: Health check failed.',
+      'PR Tracer: Health check failed.',
     );
   });
 });

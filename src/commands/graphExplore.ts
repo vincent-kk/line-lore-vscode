@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { LineLoreAdapter } from '../core/index.js';
+import type { PrTracerAdapter } from '../core/index.js';
 import type {
   StatusBarController,
   DetailPanelManager,
@@ -7,7 +7,7 @@ import type {
 import { handleTraceError } from './traceHelpers.js';
 
 export function executeGraphExplore(
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
 ): () => Promise<void> {

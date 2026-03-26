@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { LineLoreAdapter } from '../core/index.js';
+import type { PrTracerAdapter } from '../core/index.js';
 import type {
   StatusBarController,
   DetailPanelManager,
@@ -8,7 +8,7 @@ import { formatTraceResult } from '../core/index.js';
 import { showTraceResult, handleTraceError } from './traceHelpers.js';
 
 export function executeTracePR(
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
 ): () => Promise<void> {

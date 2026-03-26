@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { LineLoreHoverProvider } from '../hoverProvider.js';
+import { PrTracerHoverProvider } from '../hoverProvider.js';
 
 vi.mock('vscode', () => {
   const MarkdownString = vi.fn(function (
@@ -55,8 +55,8 @@ import { formatHoverMarkdown } from '../hoverMarkdown.js';
 const mockTraceCached = vi.fn();
 const mockAdapter = { traceCached: mockTraceCached } as never;
 
-describe('LineLoreHoverProvider', () => {
-  let provider: LineLoreHoverProvider;
+describe('PrTracerHoverProvider', () => {
+  let provider: PrTracerHoverProvider;
 
   const mockDocument = {
     uri: { fsPath: '/workspace/src/auth.ts' },
@@ -75,7 +75,7 @@ describe('LineLoreHoverProvider', () => {
           get: vi.fn((_key: string, defaultValue: unknown) => defaultValue),
         }) as never,
     );
-    provider = new LineLoreHoverProvider(mockAdapter);
+    provider = new PrTracerHoverProvider(mockAdapter);
   });
 
   it('returns undefined when hovering on code text (position within text)', async () => {
@@ -297,7 +297,7 @@ describe('LineLoreHoverProvider', () => {
 
     expect(result).toBeDefined();
     expect(vscode.MarkdownString).toHaveBeenCalledWith(
-      `$(search) [Line Lore: Trace PR](command:lineLore.traceFromHover?${encodeURIComponent(JSON.stringify(['/workspace/src/auth.ts', 42]))})`,
+      `$(search) [PR Tracer: Trace PR](command:prTracer.traceFromHover?${encodeURIComponent(JSON.stringify(['/workspace/src/auth.ts', 42]))})`,
     );
   });
 

@@ -97,7 +97,7 @@ describe('DecorationController', () => {
       expect.objectContaining({
         command: expect.objectContaining({
           title: ' $(info) ',
-          command: 'lineLore.showDetails',
+          command: 'prTracer.showDetails',
         }),
       }),
     );
@@ -105,7 +105,7 @@ describe('DecorationController', () => {
       expect.objectContaining({
         command: expect.objectContaining({
           title: ' $(close) ',
-          command: 'lineLore.clearDecoration',
+          command: 'prTracer.clearDecoration',
         }),
       }),
     );

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { LineLoreAdapter } from '../lineLoreAdapter.js';
+import { PrTracerAdapter } from '../prTracerAdapter.js';
 
 vi.mock('vscode', () => ({
   workspace: {
@@ -26,11 +26,11 @@ const mockTrace = vi.mocked(trace);
 const mockHealth = vi.mocked(health);
 const mockClearCache = vi.mocked(clearCache);
 
-describe('LineLoreAdapter', () => {
-  let adapter: LineLoreAdapter;
+describe('PrTracerAdapter', () => {
+  let adapter: PrTracerAdapter;
 
   beforeEach(() => {
-    adapter = new LineLoreAdapter();
+    adapter = new PrTracerAdapter();
     vi.clearAllMocks();
   });
 

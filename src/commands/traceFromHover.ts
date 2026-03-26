@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { LineLoreAdapter } from '../core/index.js';
+import type { PrTracerAdapter } from '../core/index.js';
 import type {
   StatusBarController,
   DetailPanelManager,
@@ -14,7 +14,7 @@ type TraceOverrides = Partial<
 >;
 
 export function executeTraceFromHover(
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
   decoration?: DecorationController,
@@ -59,7 +59,7 @@ export function executeTraceFromHover(
 }
 
 export const executeTraceOriginFromHover = (
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
   decoration?: DecorationController,

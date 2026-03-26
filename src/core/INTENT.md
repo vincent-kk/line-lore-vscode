@@ -4,13 +4,13 @@ Wraps @lumy-pack/line-lore public API for VSCode extension use.
 
 ## Public API
 
-- `LineLoreAdapter` -- trace(), health(), clearCache() with workspace-aware config merge
+- `PrTracerAdapter` -- trace(), health(), clearCache() with workspace-aware config merge
 - `formatTraceResult()` -- TraceFullResult to DisplayResult conversion
 - `formatErrorMessage()` -- LineLoreError code to user-facing ErrorInfo via 3-tier strategy (24 codes)
 
 ## Always do
 
-- Route all @lumy-pack/line-lore calls through LineLoreAdapter
+- Route all @lumy-pack/line-lore calls through PrTracerAdapter
 - Handle all 24 LineLoreErrorCode values via 3-tier strategy
 - Import LineLoreErrorCode const object for comparisons (no string literals)
 

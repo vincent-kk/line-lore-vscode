@@ -55,7 +55,7 @@ describe('formatHoverMarkdown', () => {
     const expectedArgs = encodeURIComponent(
       JSON.stringify(['https://github.com/org/repo/pull/42']),
     );
-    expect(value).toContain(`command:lineLore.copyPrLink?${expectedArgs}`);
+    expect(value).toContain(`command:prTracer.copyPrLink?${expectedArgs}`);
   });
 
   it('includes Show Details command URI with encoded filePath and line', () => {
@@ -65,7 +65,7 @@ describe('formatHoverMarkdown', () => {
     const expectedArgs = encodeURIComponent(
       JSON.stringify(['/src/auth.ts', 10]),
     );
-    expect(value).toContain(`command:lineLore.showDetails?${expectedArgs}`);
+    expect(value).toContain(`command:prTracer.showDetails?${expectedArgs}`);
   });
 
   it('includes Re-trace link with traceFromHover and encoded args', () => {
@@ -75,7 +75,7 @@ describe('formatHoverMarkdown', () => {
     const expectedArgs = encodeURIComponent(
       JSON.stringify(['/src/auth.ts', 10]),
     );
-    expect(value).toContain(`command:lineLore.traceFromHover?${expectedArgs}`);
+    expect(value).toContain(`command:prTracer.traceFromHover?${expectedArgs}`);
   });
 
   it('includes Origin trace button with traceOriginFromHover command', () => {
@@ -87,7 +87,7 @@ describe('formatHoverMarkdown', () => {
     );
     expect(value).toContain('$(git-merge)');
     expect(value).toContain(
-      `command:lineLore.traceOriginFromHover?${expectedArgs}`,
+      `command:prTracer.traceOriginFromHover?${expectedArgs}`,
     );
   });
 
@@ -186,7 +186,7 @@ describe('formatHoverMarkdown', () => {
       const copyArgs = encodeURIComponent(
         JSON.stringify(['https://github.com/org/repo/pull/99']),
       );
-      expect(value).toContain(`command:lineLore.copyPrLink?${copyArgs}`);
+      expect(value).toContain(`command:prTracer.copyPrLink?${copyArgs}`);
     });
   });
 

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { LineLoreAdapter } from '../core/index.js';
+import type { PrTracerAdapter } from '../core/index.js';
 import type {
   StatusBarController,
   DetailPanelManager,
@@ -18,46 +18,46 @@ import { handleTraceError } from './traceHelpers.js';
 
 export function registerCommands(
   context: vscode.ExtensionContext,
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
   statusBar: StatusBarController,
   detailPanel?: DetailPanelManager,
   decoration?: DecorationController,
 ): void {
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      'lineLore.tracePR',
+      'prTracer.tracePR',
       executeTracePR(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand(
-      'lineLore.tracePRRange',
+      'prTracer.tracePRRange',
       executeTracePRRange(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand(
-      'lineLore.healthCheck',
+      'prTracer.healthCheck',
       executeHealthCheck(adapter),
     ),
     vscode.commands.registerCommand(
-      'lineLore.clearCache',
+      'prTracer.clearCache',
       executeClearCache(adapter),
     ),
     vscode.commands.registerCommand(
-      'lineLore.graphExplore',
+      'prTracer.graphExplore',
       executeGraphExplore(adapter, statusBar, detailPanel),
     ),
     vscode.commands.registerCommand(
-      'lineLore.traceFromHover',
+      'prTracer.traceFromHover',
       executeTraceFromHover(adapter, statusBar, detailPanel, decoration),
     ),
     vscode.commands.registerCommand(
-      'lineLore.traceOriginFromHover',
+      'prTracer.traceOriginFromHover',
       executeTraceOriginFromHover(adapter, statusBar, detailPanel, decoration),
     ),
-    vscode.commands.registerCommand('lineLore.copyPrLink', (prUrl: string) => {
+    vscode.commands.registerCommand('prTracer.copyPrLink', (prUrl: string) => {
       void vscode.env.clipboard.writeText(prUrl);
       void vscode.window.showInformationMessage('PR link copied!');
     }),
     vscode.commands.registerCommand(
-      'lineLore.showDetails',
+      'prTracer.showDetails',
       async (filePath: string, line: number) => {
         if (!detailPanel) {
           return;

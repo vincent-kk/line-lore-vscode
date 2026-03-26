@@ -75,11 +75,11 @@ function appendActionButtons(
   const detailArgs = encodeURIComponent(JSON.stringify([filePath, line]));
 
   md.appendMarkdown(
-    `$(copy) [Copy Link](command:lineLore.copyPrLink?${copyArgs})`,
+    `$(copy) [Copy Link](command:prTracer.copyPrLink?${copyArgs})`,
   );
   md.appendMarkdown('&ensp;');
   md.appendMarkdown(
-    `$(book) [Show Details](command:lineLore.showDetails?${detailArgs})`,
+    `$(book) [Show Details](command:prTracer.showDetails?${detailArgs})`,
   );
 }
 
@@ -90,10 +90,10 @@ function appendTraceButtons(
 ): void {
   const retraceArgs = encodeURIComponent(JSON.stringify([filePath, line]));
   md.appendMarkdown(
-    `$(refresh) [Re-trace](command:lineLore.traceFromHover?${retraceArgs})`,
+    `$(refresh) [Re-trace](command:prTracer.traceFromHover?${retraceArgs})`,
   );
   md.appendMarkdown('&ensp;');
   md.appendMarkdown(
-    `$(git-merge) [Origin](command:lineLore.traceOriginFromHover?${retraceArgs})`,
+    `$(git-merge) [Origin](command:prTracer.traceOriginFromHover?${retraceArgs})`,
   );
 }

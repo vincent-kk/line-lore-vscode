@@ -10,7 +10,7 @@ import type {
   OperatingLevel,
 } from '../types/index.js';
 
-export class LineLoreAdapter {
+export class PrTracerAdapter {
   async trace(
     filePath: string,
     line: number,
@@ -19,7 +19,7 @@ export class LineLoreAdapter {
       Pick<TraceOptions, 'deep' | 'noAst' | 'noCache' | 'mode'>
     >,
   ): Promise<TraceFullResult> {
-    const config = vscode.workspace.getConfiguration('lineLore');
+    const config = vscode.workspace.getConfiguration('prTracer');
     const cwd = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath))
       ?.uri.fsPath;
     const options: TraceOptions = {

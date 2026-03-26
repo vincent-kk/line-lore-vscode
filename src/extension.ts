@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { detectGitRepo } from './utils/gitDetector.js';
-import { LineLoreAdapter } from './core/index.js';
+import { PrTracerAdapter } from './core/index.js';
 import { registerCommands } from './commands/index.js';
 import { registerProviders, DecorationController } from './providers/index.js';
 import { StatusBarController, DetailPanelManager } from './views/index.js';
@@ -8,7 +8,7 @@ import { StatusBarController, DetailPanelManager } from './views/index.js';
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
-  const config = vscode.workspace.getConfiguration('lineLore');
+  const config = vscode.workspace.getConfiguration('prTracer');
   if (!config.get<boolean>('enabled', true)) {
     return;
   }
@@ -32,11 +32,11 @@ export async function activate(
 
   void vscode.commands.executeCommand(
     'setContext',
-    'lineLore.gitDetected',
+    'prTracer.gitDetected',
     true,
   );
 
-  const adapter = new LineLoreAdapter();
+  const adapter = new PrTracerAdapter();
   const statusBar = new StatusBarController();
   statusBar.create();
 
@@ -47,24 +47,24 @@ export async function activate(
     { dispose: () => statusBar.dispose() },
     { dispose: () => detailPanel.dispose() },
     { dispose: () => decoration.dispose() },
-    vscode.commands.registerCommand('lineLore.clearDecoration', (key?: string) => {
+    vscode.commands.registerCommand('prTracer.clearDecoration', (key?: string) => {
       if (key) {
         decoration.clearOne(key);
       } else {
         decoration.clear();
       }
     }),
-    vscode.commands.registerCommand('lineLore.clearAllDecorations', () => {
+    vscode.commands.registerCommand('prTracer.clearAllDecorations', () => {
       decoration.clear();
     }),
-    vscode.commands.registerCommand('lineLore.statusBarMenu', async () => {
+    vscode.commands.registerCommand('prTracer.statusBarMenu', async () => {
       const pick = await vscode.window.showQuickPick(
         [
-          { label: '$(search) Health Check', command: 'lineLore.healthCheck' },
-          { label: '$(close-all) Clear All Decorations', command: 'lineLore.clearAllDecorations' },
-          { label: '$(trash) Clear Cache', command: 'lineLore.clearCache' },
+          { label: '$(search) Health Check', command: 'prTracer.healthCheck' },
+          { label: '$(close-all) Clear All Decorations', command: 'prTracer.clearAllDecorations' },
+          { label: '$(trash) Clear Cache', command: 'prTracer.clearCache' },
         ],
-        { placeHolder: 'Line Lore' },
+        { placeHolder: 'PR Tracer' },
       );
       if (pick) {
         void vscode.commands.executeCommand(pick.command);

@@ -33,7 +33,7 @@ describe('executeClearCache', () => {
     await handler();
 
     expect(vscode.window.showWarningMessage).toHaveBeenCalledWith(
-      'Clear all Line Lore cached data?',
+      'Clear all PR Tracer cached data?',
       { modal: true },
       'Clear Cache',
     );
@@ -64,7 +64,7 @@ describe('executeClearCache', () => {
     await handler();
 
     expect(vscode.window.showErrorMessage).toHaveBeenCalledWith(
-      'Line Lore: Failed to clear cache.',
+      'PR Tracer: Failed to clear cache.',
     );
   });
 });

@@ -35,29 +35,29 @@ describe('StatusBarController', () => {
   });
 
   it('creates StatusBarItem with statusBarMenu command', () => {
-    expect(mockStatusBarItem.command).toBe('lineLore.statusBarMenu');
+    expect(mockStatusBarItem.command).toBe('prTracer.statusBarMenu');
   });
 
   it('showLoading displays spinner text', () => {
     controller.showLoading();
-    expect(mockStatusBarItem.text).toBe('$(sync~spin) Line Lore: Tracing...');
+    expect(mockStatusBarItem.text).toBe('$(sync~spin) PR Tracer: Tracing...');
     expect(mockStatusBarItem.show).toHaveBeenCalled();
   });
 
   it('showResult displays level 2 with git-pull-request icon', () => {
     controller.showResult(2);
-    expect(mockStatusBarItem.text).toBe('$(git-pull-request) Line Lore: L2');
+    expect(mockStatusBarItem.text).toBe('$(git-pull-request) PR Tracer: L2');
     expect(mockStatusBarItem.show).toHaveBeenCalled();
   });
 
   it('showResult displays level 1 with warning icon', () => {
     controller.showResult(1);
-    expect(mockStatusBarItem.text).toBe('$(warning) Line Lore: L1');
+    expect(mockStatusBarItem.text).toBe('$(warning) PR Tracer: L1');
   });
 
   it('showResult displays level 0 with circle-slash icon', () => {
     controller.showResult(0);
-    expect(mockStatusBarItem.text).toBe('$(circle-slash) Line Lore: L0');
+    expect(mockStatusBarItem.text).toBe('$(circle-slash) PR Tracer: L0');
   });
 
   it('showResult auto-hides after 5 seconds', () => {
@@ -70,7 +70,7 @@ describe('StatusBarController', () => {
 
   it('showError displays error text and auto-hides', () => {
     controller.showError('Something failed');
-    expect(mockStatusBarItem.text).toBe('$(error) Line Lore: Error');
+    expect(mockStatusBarItem.text).toBe('$(error) PR Tracer: Error');
     expect(mockStatusBarItem.tooltip).toBe('Something failed');
     expect(mockStatusBarItem.show).toHaveBeenCalled();
 

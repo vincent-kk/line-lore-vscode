@@ -16,8 +16,8 @@ export class DetailPanelManager {
       this.panel.reveal(vscode.ViewColumn.Beside);
     } else {
       this.panel = vscode.window.createWebviewPanel(
-        'lineLoreDetail',
-        'Line Lore — Trace Result',
+        'prTracerDetail',
+        'PR Tracer — Trace Result',
         vscode.ViewColumn.Beside,
         { enableScripts: false },
       );
@@ -143,7 +143,7 @@ export class DetailPanelManager {
   </style>
 </head>
 <body>
-  <h1>Line Lore — Trace Result</h1>
+  <h1>PR Tracer — Trace Result</h1>
   <div class="file-info">${this.escapeHtml(fileName)} : ${lineLabel}</div>
   ${nodesHtml}
   <div class="section-title">Operating Level</div>

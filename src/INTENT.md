@@ -1,6 +1,6 @@
 # src — Extension Source Root
 
-Entry point for the Line Lore VSCode extension.
+Entry point for the PR Tracer VSCode extension.
 
 ## Public API
 

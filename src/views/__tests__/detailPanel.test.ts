@@ -61,8 +61,8 @@ describe('DetailPanelManager', () => {
     manager.show('/workspace/src/auth.ts', 42, mockResult);
 
     expect(mockCreateWebviewPanel).toHaveBeenCalledWith(
-      'lineLoreDetail',
-      'Line Lore — Trace Result',
+      'prTracerDetail',
+      'PR Tracer — Trace Result',
       2,
       { enableScripts: false },
     );

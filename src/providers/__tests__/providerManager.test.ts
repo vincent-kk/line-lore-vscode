@@ -46,7 +46,7 @@ describe('ProviderManager', () => {
     manager.register(mockContext as never);
 
     expect(vscode.languages.registerHoverProvider).toHaveBeenCalledWith(
-      { scheme: 'file' },
+      '*',
       expect.anything(),
     );
   });
@@ -66,7 +66,7 @@ describe('ProviderManager', () => {
     hoverEnabled = false;
     configChangeCallback?.({
       affectsConfiguration: (s: string) =>
-        s === 'lineLore.hoverProvider.enabled',
+        s === 'prTracer.hoverProvider.enabled',
     });
 
     expect(mockHoverDisposable.dispose).toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe('ProviderManager', () => {
     hoverEnabled = true;
     configChangeCallback?.({
       affectsConfiguration: (s: string) =>
-        s === 'lineLore.hoverProvider.enabled',
+        s === 'prTracer.hoverProvider.enabled',
     });
 
     expect(vscode.languages.registerHoverProvider).toHaveBeenCalled();

@@ -35,7 +35,7 @@ describe('StatusBarController — Phase 2 persistent level', () => {
 
   it('showPersistentLevel shows level permanently', () => {
     controller.showPersistentLevel(2);
-    expect(mockStatusBarItem.text).toBe('$(git-pull-request) Line Lore: L2');
+    expect(mockStatusBarItem.text).toBe('$(git-pull-request) PR Tracer: L2');
     expect(mockStatusBarItem.show).toHaveBeenCalled();
 
     vi.advanceTimersByTime(10000);
@@ -47,10 +47,10 @@ describe('StatusBarController — Phase 2 persistent level', () => {
     vi.clearAllMocks();
 
     controller.showResult(0);
-    expect(mockStatusBarItem.text).toBe('$(circle-slash) Line Lore: L0');
+    expect(mockStatusBarItem.text).toBe('$(circle-slash) PR Tracer: L0');
 
     vi.advanceTimersByTime(5000);
-    expect(mockStatusBarItem.text).toBe('$(git-pull-request) Line Lore: L2');
+    expect(mockStatusBarItem.text).toBe('$(git-pull-request) PR Tracer: L2');
     expect(mockStatusBarItem.hide).not.toHaveBeenCalled();
   });
 
@@ -59,10 +59,10 @@ describe('StatusBarController — Phase 2 persistent level', () => {
     vi.clearAllMocks();
 
     controller.showError('Something failed');
-    expect(mockStatusBarItem.text).toBe('$(error) Line Lore: Error');
+    expect(mockStatusBarItem.text).toBe('$(error) PR Tracer: Error');
 
     vi.advanceTimersByTime(5000);
-    expect(mockStatusBarItem.text).toBe('$(warning) Line Lore: L1');
+    expect(mockStatusBarItem.text).toBe('$(warning) PR Tracer: L1');
     expect(mockStatusBarItem.hide).not.toHaveBeenCalled();
   });
 
@@ -75,6 +75,6 @@ describe('StatusBarController — Phase 2 persistent level', () => {
   it('showLoading overrides persistent display', () => {
     controller.showPersistentLevel(2);
     controller.showLoading();
-    expect(mockStatusBarItem.text).toBe('$(sync~spin) Line Lore: Tracing...');
+    expect(mockStatusBarItem.text).toBe('$(sync~spin) PR Tracer: Tracing...');
   });
 });

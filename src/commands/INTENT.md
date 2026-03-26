@@ -1,6 +1,6 @@
 # commands -- VSCode Command Handlers
 
-Registers and implements all Line Lore commands for the Command Palette and keybindings.
+Registers and implements all PR Tracer commands for the Command Palette and keybindings.
 
 ## Public API
 
@@ -19,7 +19,7 @@ Registers and implements all Line Lore commands for the Command Palette and keyb
 
 ## Never do
 
-- Call @lumy-pack/line-lore directly; use LineLoreAdapter from core/
+- Call @lumy-pack/line-lore directly; use PrTracerAdapter from core/
 - Put registration logic in index.ts (keep it a pure barrel)
 - Block the extension host with synchronous operations
 - Swallow errors silently; always show user-facing message

@@ -1,18 +1,16 @@
-# Line Lore
+# PR Tracer
 
 **Trace any code line back to its origin Pull Request** — right from your editor.
 
-Line Lore answers the question _"Why is this code here?"_ in 3 seconds. Place your cursor on a line, trace it through git blame, and discover the PR that introduced it — without leaving VSCode.
+PR Tracer answers the question _"Why is this code here?"_ in 3 seconds. Place your cursor on a line, trace it through git blame, and discover the PR that introduced it — without leaving VSCode.
 
 ## Installation
 
-Line Lore is not yet published to the VSCode Marketplace. Install manually via `.vsix`:
+Search for **PR Tracer** in the [VSCode Marketplace](https://marketplace.visualstudio.com/) and click **Install**, or run:
 
-1. Download the latest `.vsix` from [GitHub Releases](https://github.com/vincent-kk/line-lore-vscode/releases)
-2. Install in VSCode:
-   - **Via Command Palette**: `Cmd+Shift+P` (macOS) / `Ctrl+Shift+P` (Windows/Linux) → `Extensions: Install from VSIX...` → select the downloaded file
-   - **Via CLI**: `code --install-extension line-lore-<version>.vsix`
-3. Reload VSCode when prompted
+```
+ext install vincent-kkelvin.pr-tracer
+```
 
 ## Features
 
@@ -22,7 +20,7 @@ Right-click any line or use the Command Palette to trace it back to its origin P
 
 - **Information Message** with PR title, "Open PR" and "Copy Link" buttons
 - **Show Details** opens a side panel with the full trace chain (commit → merge → PR → issue)
-- **Inline Decoration** shows `← PR #42` ghost text next to the traced line
+- **Inline Decoration** shows a CodeLens above the traced line: `PR #42: title` with Show Details and Dismiss actions (auto-hidden when the file is closed)
 
 ### Two Trace Modes
 
@@ -76,7 +74,7 @@ A webview side panel that renders the full trace chain:
 
 1. Open a file in a Git repository
 2. Place your cursor on a line
-3. Run **Line Lore: Trace PR** from:
+3. Run **PR Tracer: Trace PR** from:
    - Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
    - Right-click context menu
    - Hover tooltip link (after end of line text)
@@ -85,23 +83,23 @@ A webview side panel that renders the full trace chain:
 
 | Command | Description |
 | --- | --- |
-| `Line Lore: Trace PR` | Trace current line to its origin PR |
-| `Line Lore: Trace PR (Range)` | Trace selected line range |
-| `Line Lore: Explore Graph` | Explore PR → Issue graph |
-| `Line Lore: Health Check` | Check operating level and platform status |
-| `Line Lore: Clear Cache` | Clear cached trace data |
+| `PR Tracer: Trace PR` | Trace current line to its origin PR |
+| `PR Tracer: Trace PR (Range)` | Trace selected line range |
+| `PR Tracer: Explore Graph` | Explore PR → Issue graph |
+| `PR Tracer: Health Check` | Check operating level and platform status |
+| `PR Tracer: Clear Cache` | Clear cached trace data |
 
 ## Settings
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `lineLore.enabled` | `true` | Enable/disable the extension |
-| `lineLore.hoverProvider.enabled` | `true` | Show trace info in hover tooltip |
-| `lineLore.inlineDecoration.enabled` | `true` | Show PR number inline after trace |
-| `lineLore.inlineDecoration.timeout` | `30` | Seconds before decoration auto-removes (0 = never) |
-| `lineLore.trace.deep` | `false` | Enable deep trace for squash merges |
-| `lineLore.trace.noAst` | `false` | Disable AST analysis |
-| `lineLore.trace.noCache` | `false` | Disable caching |
+| `prTracer.enabled` | `true` | Enable/disable the extension |
+| `prTracer.hoverProvider.enabled` | `true` | Show trace info in hover tooltip |
+| `prTracer.inlineDecoration.enabled` | `true` | Show PR number inline after trace |
+| `prTracer.inlineDecoration.timeout` | `30` | Seconds before decoration auto-removes (0 = never) |
+| `prTracer.trace.deep` | `false` | Enable deep trace for squash merges |
+| `prTracer.trace.noAst` | `false` | Disable AST analysis |
+| `prTracer.trace.noCache` | `false` | Disable caching |
 
 ## Requirements
 
@@ -116,7 +114,7 @@ No default keybindings are registered. Bind them yourself via `Cmd+K Cmd+S` (mac
 
 | Suggested Shortcut | Command |
 | --- | --- |
-| `Cmd+Shift+L` / `Ctrl+Shift+L` | `lineLore.tracePR` |
+| `Cmd+Shift+L` / `Ctrl+Shift+L` | `prTracer.tracePR` |
 
 ## Supported Platforms
 

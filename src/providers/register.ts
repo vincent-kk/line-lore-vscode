@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
-import type { LineLoreAdapter } from '../core/index.js';
-import { LineLoreHoverProvider } from './hoverProvider.js';
+import type { PrTracerAdapter } from '../core/index.js';
+import { PrTracerHoverProvider } from './hoverProvider.js';
 
 export class ProviderManager {
   private hoverDisposable: vscode.Disposable | undefined;
 
-  constructor(private adapter: LineLoreAdapter) {}
+  constructor(private adapter: PrTracerAdapter) {}
 
   register(context: vscode.ExtensionContext): void {
     this.updateHoverProvider(context);
 
     context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration('lineLore.hoverProvider.enabled')) {
+        if (e.affectsConfiguration('prTracer.hoverProvider.enabled')) {
           this.updateHoverProvider(context);
         }
       }),
@@ -21,13 +21,13 @@ export class ProviderManager {
 
   private updateHoverProvider(context: vscode.ExtensionContext): void {
     const enabled = vscode.workspace
-      .getConfiguration('lineLore')
+      .getConfiguration('prTracer')
       .get<boolean>('hoverProvider.enabled', true);
 
     if (enabled && !this.hoverDisposable) {
       this.hoverDisposable = vscode.languages.registerHoverProvider(
         '*',
-        new LineLoreHoverProvider(this.adapter),
+        new PrTracerHoverProvider(this.adapter),
       );
       context.subscriptions.push(this.hoverDisposable);
     } else if (!enabled && this.hoverDisposable) {
@@ -39,7 +39,7 @@ export class ProviderManager {
 
 export function registerProviders(
   context: vscode.ExtensionContext,
-  adapter: LineLoreAdapter,
+  adapter: PrTracerAdapter,
 ): void {
   const manager = new ProviderManager(adapter);
   manager.register(context);

@@ -8,10 +8,10 @@
 
 ## API Contracts
 
-- `LineLoreAdapter.trace(filePath, line, endLine?, overrides?)`: Promise<TraceFullResult>
-- `LineLoreAdapter.traceCached(filePath, line)`: Promise<TraceFullResult> — cache-only trace, no network/git calls; returns empty nodes on cache miss
-- `LineLoreAdapter.health(cwd?)`: Promise<HealthReport & { operatingLevel }>
-- `LineLoreAdapter.clearCache()`: Promise<void>
+- `PrTracerAdapter.trace(filePath, line, endLine?, overrides?)`: Promise<TraceFullResult>
+- `PrTracerAdapter.traceCached(filePath, line)`: Promise<TraceFullResult> — cache-only trace, no network/git calls; returns empty nodes on cache miss
+- `PrTracerAdapter.health(cwd?)`: Promise<HealthReport & { operatingLevel }>
+- `PrTracerAdapter.clearCache()`: Promise<void>
 - `formatTraceResult(result)`: DisplayResult
 - `formatErrorMessage(code)`: ErrorInfo
 

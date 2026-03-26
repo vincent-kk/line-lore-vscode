@@ -13,7 +13,7 @@ export class StatusBarController {
       vscode.StatusBarAlignment.Right,
       100,
     );
-    this.item.command = 'lineLore.statusBarMenu';
+    this.item.command = 'prTracer.statusBarMenu';
   }
 
   showPersistentLevel(level: OperatingLevel): void {
@@ -31,7 +31,7 @@ export class StatusBarController {
       return;
     }
     this.clearTimer();
-    this.item.text = '$(sync~spin) Line Lore: Tracing...';
+    this.item.text = '$(sync~spin) PR Tracer: Tracing...';
     this.item.tooltip = 'Tracing line to PR...';
     this.item.show();
   }
@@ -51,7 +51,7 @@ export class StatusBarController {
       return;
     }
     this.clearTimer();
-    this.item.text = '$(error) Line Lore: Error';
+    this.item.text = '$(error) PR Tracer: Error';
     this.item.tooltip = message;
     this.item.show();
     this.hideTimer = setTimeout(() => this.restoreOrHide(), AUTO_HIDE_MS);
@@ -80,7 +80,7 @@ export class StatusBarController {
     } else {
       icon = '$(circle-slash)';
     }
-    this.item.text = `${icon} Line Lore: L${level}`;
+    this.item.text = `${icon} PR Tracer: L${level}`;
     this.item.tooltip = `Operating Level ${level}`;
   }
 

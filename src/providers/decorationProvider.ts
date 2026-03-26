@@ -55,13 +55,13 @@ export class DecorationController implements vscode.CodeLensProvider {
         new vscode.CodeLens(range, {
           title: ' $(info) ',
           tooltip: 'Show Details',
-          command: 'lineLore.showDetails',
+          command: 'prTracer.showDetails',
           arguments: [entry.filePath, entry.line],
         }),
         new vscode.CodeLens(range, {
           title: ' $(close) ',
           tooltip: 'Dismiss',
-          command: 'lineLore.clearDecoration',
+          command: 'prTracer.clearDecoration',
           arguments: [key],
         }),
       );
@@ -77,7 +77,7 @@ export class DecorationController implements vscode.CodeLensProvider {
     prUrl: string,
     prTitle?: string,
   ): void {
-    const config = vscode.workspace.getConfiguration('lineLore');
+    const config = vscode.workspace.getConfiguration('prTracer');
     if (!config.get<boolean>('inlineDecoration.enabled', true)) {
       return;
     }
