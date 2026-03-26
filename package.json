@@ -1,9 +1,9 @@
 {
-  "name": "line-lore",
-  "displayName": "Line Lore",
+  "name": "pr-tracer",
+  "displayName": "PR Tracer",
   "description": "Trace any code line back to its origin Pull Request",
-  "version": "0.1.6",
-  "publisher": "lumy-pack",
+  "version": "1.0.0",
+  "publisher": "vincent-kkelvin",
   "repository": {
     "type": "git",
     "url": "https://github.com/vincent-kk/line-lore-vscode"
@@ -30,154 +30,154 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
-      "description": "Line Lore executes git commands and requires a trusted workspace."
+      "description": "PR Tracer executes git commands and requires a trusted workspace."
     },
     "virtualWorkspaces": {
       "supported": false,
-      "description": "Line Lore requires local filesystem and git access."
+      "description": "PR Tracer requires local filesystem and git access."
     }
   },
   "contributes": {
     "commands": [
       {
-        "command": "lineLore.tracePR",
+        "command": "prTracer.tracePR",
         "title": "Line Lore: Trace PR"
       },
       {
-        "command": "lineLore.tracePRRange",
+        "command": "prTracer.tracePRRange",
         "title": "Line Lore: Trace PR (Range)"
       },
       {
-        "command": "lineLore.healthCheck",
+        "command": "prTracer.healthCheck",
         "title": "Line Lore: Health Check"
       },
       {
-        "command": "lineLore.clearCache",
+        "command": "prTracer.clearCache",
         "title": "Line Lore: Clear Cache"
       },
       {
-        "command": "lineLore.graphExplore",
+        "command": "prTracer.graphExplore",
         "title": "Line Lore: Explore Graph"
       },
       {
-        "command": "lineLore.traceFromHover",
+        "command": "prTracer.traceFromHover",
         "title": "Line Lore: Trace From Hover"
       },
       {
-        "command": "lineLore.traceOriginFromHover",
+        "command": "prTracer.traceOriginFromHover",
         "title": "Line Lore: Trace Origin From Hover"
       },
       {
-        "command": "lineLore.copyPrLink",
+        "command": "prTracer.copyPrLink",
         "title": "Line Lore: Copy PR Link"
       },
       {
-        "command": "lineLore.showDetails",
+        "command": "prTracer.showDetails",
         "title": "Line Lore: Show Details"
       },
       {
-        "command": "lineLore.clearAllDecorations",
+        "command": "prTracer.clearAllDecorations",
         "title": "Line Lore: Clear All Decorations"
       },
       {
-        "command": "lineLore.clearDecoration",
+        "command": "prTracer.clearDecoration",
         "title": "Line Lore: Clear Decoration"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "lineLore.tracePR",
-          "when": "editorTextFocus && resourceScheme == file && lineLore.gitDetected",
+          "command": "prTracer.tracePR",
+          "when": "editorTextFocus && resourceScheme == file && prTracer.gitDetected",
           "group": "navigation"
         },
         {
-          "command": "lineLore.tracePRRange",
-          "when": "editorTextFocus && editorHasSelection && resourceScheme == file && lineLore.gitDetected",
+          "command": "prTracer.tracePRRange",
+          "when": "editorTextFocus && editorHasSelection && resourceScheme == file && prTracer.gitDetected",
           "group": "navigation"
         }
       ],
       "commandPalette": [
         {
-          "command": "lineLore.tracePR",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.tracePR",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.tracePRRange",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.tracePRRange",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.healthCheck",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.healthCheck",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.clearCache",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.clearCache",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.graphExplore",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.graphExplore",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.traceFromHover",
+          "command": "prTracer.traceFromHover",
           "when": "false"
         },
         {
-          "command": "lineLore.traceOriginFromHover",
+          "command": "prTracer.traceOriginFromHover",
           "when": "false"
         },
         {
-          "command": "lineLore.copyPrLink",
+          "command": "prTracer.copyPrLink",
           "when": "false"
         },
         {
-          "command": "lineLore.showDetails",
+          "command": "prTracer.showDetails",
           "when": "false"
         },
         {
-          "command": "lineLore.clearAllDecorations",
-          "when": "lineLore.gitDetected"
+          "command": "prTracer.clearAllDecorations",
+          "when": "prTracer.gitDetected"
         },
         {
-          "command": "lineLore.clearDecoration",
+          "command": "prTracer.clearDecoration",
           "when": "false"
         }
       ]
     },
     "configuration": {
-      "title": "Line Lore",
+      "title": "PR Tracer",
       "properties": {
-        "lineLore.enabled": {
+        "prTracer.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable/disable Line Lore extension"
+          "description": "Enable/disable PR Tracer extension"
         },
-        "lineLore.hoverProvider.enabled": {
+        "prTracer.hoverProvider.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Show 'Trace PR' link in hover popup"
         },
-        "lineLore.inlineDecoration.enabled": {
+        "prTracer.inlineDecoration.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Show PR number inline after trace"
         },
-        "lineLore.inlineDecoration.timeout": {
+        "prTracer.inlineDecoration.timeout": {
           "type": "number",
           "default": 30,
           "description": "Seconds before inline decoration auto-removes (0 = never)"
         },
-        "lineLore.trace.deep": {
+        "prTracer.trace.deep": {
           "type": "boolean",
           "default": false,
           "description": "Enable deep trace for squash merges by default"
         },
-        "lineLore.trace.noAst": {
+        "prTracer.trace.noAst": {
           "type": "boolean",
           "default": false,
           "description": "Disable AST analysis"
         },
-        "lineLore.trace.noCache": {
+        "prTracer.trace.noCache": {
           "type": "boolean",
           "default": false,
           "description": "Disable caching"
