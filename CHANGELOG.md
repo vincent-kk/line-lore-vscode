@@ -2,21 +2,25 @@
 
 ## [0.1.6] - 2026-03-26
 
-### Added
-
 ### Changed
 
-### Fixed
+- **Hover Provider**: Expanded hover registration from `file` scheme only to all document schemes (`*`) — enables PR tracing in remote files, git diff views, and other non-file documents
 
-
-## [0.1.5] - 2026-03-26
+## [0.1.5] - 2026-03-25
 
 ### Added
 
+- **DecorationController**: Introduced a controller for managing inline PR decorations, integrated with trace commands to display PR information directly in the editor
+- **Document close handling**: Added document close event listener with `clearByUri` method to automatically clean up associated lenses
+- **`lineLore.enabled` setting**: Added configuration option to conditionally activate or deactivate the extension
+- **Korean README**: Added Korean translation of README with enhanced feature descriptions
+
 ### Changed
 
-### Fixed
-
+- **@lumy-pack/line-lore**: Updated dependency to version 0.0.9
+- **Command registration**: Restructured command registration and activation logic to include DecorationController
+- **version.sh**: Enhanced to automatically push commits and tags to remote
+- **Build config**: Excluded `.yarn` directory in `.vscodeignore`, applied `--no-yarn` flag to `vsce` commands
 
 ## [0.1.4] - 2026-03-24
 
